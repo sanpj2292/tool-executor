@@ -1,26 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import ConsoleOut from './components/console-out';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      folder: ''
+    };
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const folderVal = e.target.folder.value;
+    this.setState({ folder: folderVal });
+    // fs.lstat(folderVal, (err, stats) => {
+    //   if (err) {
+    //     alert('Error in Uploading Directory')
+    //     return;
+    //   }
+    //   console.log(`Is directory: ${stats.isDirectory()}`);
+    // });
+  }
+
+  render() {
+    const { folder } = this.state;
+    return (
+      <div className="App">
+        <form onSubmit={this.handleSubmit}>
+          <label htmlFor="folder">FolderName</label>
+          <input name="folder" type="text" />
+          <input type="submit" value="Submit" />
+        </form>
+        {
+          this.state.folder !== '' ? <ConsoleOut folderPath={folder} /> : null
+        }
+      </div>
+    );
+  }
+
 }
 
 export default App;
