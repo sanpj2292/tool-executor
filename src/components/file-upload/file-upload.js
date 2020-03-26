@@ -38,7 +38,7 @@ class FileUpload extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.onSubmitHandler} encType='multipart/form-data'>
+            <form onSubmit={this.onSubmitHandler}>
                 <input type='file' name='file' onChange={this.onChangeHandler} />
                 <input type='submit' value='Upload' />
             </form>
