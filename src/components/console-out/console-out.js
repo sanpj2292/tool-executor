@@ -1,5 +1,6 @@
 import React from 'react';
 import socketIOClient from "socket.io-client";
+import './console-out.css';
 
 class ConsoleOut extends React.Component {
 
@@ -25,8 +26,14 @@ class ConsoleOut extends React.Component {
                     const isDef = isDefAndNotNull(prevConsoleOut) && prevConsoleOut !== '\n';
                     return { consoleOut: (isDef ? `${prevConsoleOut}\n` : '') + data }
                 });
-            }
-            );
+            });
+            socket.on('exitFunction', (data) => {
+                alert('I have come to Client...');
+                this.setState((prevState, prevProps) => {
+                    alert('Before changing state');
+                    return { consoleOut: `${prevState.consoleOut}\n${data}` };
+                });
+            });
         }
     }
 

@@ -2,8 +2,11 @@
     width: 600px;
     height: 120px;
     border: 3px solid #cccccc;
+    border-radius: 4px;
     padding: 5px;
     font-family: Tahoma, sans-serif;
     background-position: bottom right;
     background-repeat: no-repeat;
+    background-color: #d7d7dd;
+    color: black;
 }
