@@ -1,7 +1,9 @@
 import React from 'react';
 import './App.css';
-import ConsoleOut from './components/console-out/console-out';
-import FileUpload from "./components/file-upload/file-upload";
+// import ConsoleOut from './components/console-out/console-out';
+// import FileUpload from "./components/file-upload/file-upload";
+import Header from './components/header/header';
+import StoreTool from './components/store-tool/store-tool';
 
 class App extends React.Component {
   constructor(props) {
@@ -18,10 +20,13 @@ class App extends React.Component {
   }
 
   render() {
-    const { folder } = this.state;
+    // const { folder } = this.state;
     return (
       <div className="App">
-        <FileUpload />
+        <Header />
+        <div className='container'>
+          <StoreTool />
+        </div>
       </div>
     );
   }

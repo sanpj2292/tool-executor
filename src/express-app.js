@@ -5,48 +5,16 @@ const { spawn } = require('child_process');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 
+const controller = require('./routes/controller/controller');
+
 const port = process.env.PORT || 4000;
-const jarFolderPath = `${__dirname}/uploads/jars`;
-const downloadPath = `${__dirname}/downloads`;
 
 const app = express();
 app.use(cors({
     origin: 'http://localhost:3000'
 }));
 app.use(fileUpload());
-
-app.post('/uploadJarFile', (req, res) => {
-    if (!req.files || req.files.length === 0) {
-        return res.status(400).send('No Files were uploaded');
-    }
-
-    const jarFile = req.files.file;
-    const name = jarFile.name;
-    const filePath = `${jarFolderPath}/${name}`;
-
-    jarFile.mv(filePath, (err) => {
-        if (err) {
-            return res.status(500).send(err);
-        }
-        res.json({ message: 'File successfully uploaded!' });
-    });
-});
-
-app.get('/download/:downloadFile', (req, res) => {
-    let fname = req.params.downloadFile;
-    res.download(`${downloadPath}\\${fname}`, (err) => {
-        if (err) {
-            return res.status(500).send({
-                message: 'Couldn\'t download the provided file',
-                error: err
-            });
-        }
-    });
-});
-
-app.use('/', (req, res) => {
-    res.send('Express Page');
-});
+app.use('/', controller);
 
 const server = http.createServer(app);
 
@@ -87,7 +55,7 @@ const getApiAndEmit = async socket => {
     }
 };
 
-server.listen(port, () => {
+app.listen(port, () => {
     console.log(`We are live at ${port}`);
 });
 
