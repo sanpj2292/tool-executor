@@ -4,6 +4,8 @@ import './App.css';
 // import FileUpload from "./components/file-upload/file-upload";
 import Header from './components/header/header';
 import StoreTool from './components/store-tool/store-tool';
+import ConsoleOut from "./components/console-out/console-out";
+import socketIOClient from "socket.io-client";
 
 class App extends React.Component {
   constructor(props) {
@@ -19,13 +21,38 @@ class App extends React.Component {
     this.setState({ folder: folderVal });
   }
 
+  handleExecute = (e) => {
+    alert('Clicked')
+    const socket = socketIOClient('http://localhost:4000/sendHello');
+    socket.on('hello', data => alert(data));
+  };
+
   render() {
-    // const { folder } = this.state;
+    const { folder } = this.state;
     return (
       <div className="App">
         <Header />
-        <div className='container'>
-          <StoreTool />
+        <div className='container d-flex'>
+          <form style={{ width: '40vw' }} onSubmit={this.handleSubmit}>
+            <div className='form-group mt-2 d-flex justify-content-around'>
+              <label htmlFor='folder' > FolderPath </label>
+              <input className='' name='folder' defaultValue='' />
+            </div>
+            {
+              folder ? (<div className='form-group d-flex'>
+                <ConsoleOut className='mt-2' folderPath={folder} />
+              </div>) : null
+            }
+
+            <div className='form-group d-flex justify-content-end'>
+              {/* {folder ? (
+                ) : null} */}
+              <input type='button' className='btn btn-info mr-2'
+                onClick={this.handleExecute} value='Execute' />
+              <input type='submit' className='btn btn-primary' value='Submit' />
+            </div>
+          </form>
+          {/* <StoreTool /> */}
         </div>
       </div>
     );
