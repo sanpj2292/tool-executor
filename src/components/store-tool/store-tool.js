@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import FileUpload from '../file-upload/file-upload';
+import './store-tool.scss';
 
 class StoreTool extends React.Component {
     state = {
@@ -46,22 +47,22 @@ class StoreTool extends React.Component {
 
     render() {
         return (
-            <form className='px-2 py-2 container border' onSubmit={this.onSubmitHandler}>
+            <form className='px-2 py-2 container border store-tool' onSubmit={this.onSubmitHandler}>
                 <div className='form-group py-2'>
-                    <FileUpload extension='jar' className='form-control'
+                    <FileUpload extension='jar'
                         name='jarFile'
                         onChange={this.onChangeHandler}
                         helptext='Jar File'>
                     </FileUpload>
                 </div>
                 <div className='form-group py-2'>
-                    <FileUpload extension='json' className='form-control'
+                    <FileUpload extension='json'
                         name='jsonFile'
                         onChange={this.onChangeHandler}
                         helptext='Config Json'>
                     </FileUpload>
                 </div>
-                <div className='form-group'>
+                <div className='form-group d-flex justify-content-end'>
                     <input type='submit' className='btn btn-primary' value='Upload' />
                 </div>
             </form>

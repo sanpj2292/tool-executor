@@ -5,7 +5,7 @@ const Header = () => {
     return (
         <div className="navbar navbar-dark bg-dark">
             <a className="navbar-brand" href='/'>
-                <ToolSvg width={20} height={20} className="mr-1" />
+                <ToolSvg width={20} height={20} className="pt-1 mr-1" color='white' />
                 <span className='align-center'>Tool Executor</span>
             </a>
         </div>
