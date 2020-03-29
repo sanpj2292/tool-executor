@@ -17,6 +17,61 @@ router.get('/', (req, res) => {
         `);
 });
 
+router.get('/aggregate', async (req, res) => {
+    try {
+        const aggregatedTool = await Tool.aggregate([
+            {
+                $group: {
+                    _id: '$name',
+                    versions: {
+                        $push: { $convert: { input: '$version', to: 'double' } }
+                    },
+                    grouped_versions: {
+                        $push: {
+                            id: '$_id',
+                            mimetype: '$mimetype',
+                            version: '$version',
+                            createdAt: '$createdAt',
+                            updatedAt: '$updatedAt',
+                            versioned_name: '$versioned_name'
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    name: '$_id',
+                    versions: '$versions',
+                    ids: '$grouped_versions.id'
+                }
+            }
+        ]);
+        return res.status(200).send(aggregatedTool);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send(error);
+    }
+});
+var stream = require('stream');
+router.get('/download/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const fileMetaData = await Tool.findById(id);
+        const { mimetype, encoding, versioned_name, data } = fileMetaData;
+        let fileContents = Buffer.from(data, encoding);
+        res.set('Content-disposition', 'attachment; filename=' + versioned_name);
+        res.set('Content-Type', mimetype);
+        var readStream = new stream.PassThrough();
+        readStream.end(fileContents);
+
+        readStream.pipe(res);
+    } catch (error) {
+        console.log('error occurred');
+        return res.status(500).send(error);
+    }
+});
+
 router.get('/tools', async (req, res) => {
     try {
         const toolsList = await Tool.find({});
@@ -32,7 +87,7 @@ router.get('/tools', async (req, res) => {
 router.post('/toolSave', async (req, res) => {
     try {
         if (!req.files || req.files.length === 0) {
-            throw new Error('No Files were uploaded:400');
+            return res.status(400).send('No Files were uploaded');
         }
 
         const jarFile = req.files.file;
@@ -53,17 +108,7 @@ router.post('/toolSave', async (req, res) => {
         await tool.save();
         return res.status(201).send({ 'message': 'Successful Insertion' });
 
-        // jarFile.mv(filePath, (err) => {
-        //     if (err) {
-        //         throw new Error(`${err.message}:500`)
-        //     }
-        //     res.json({ message: 'File successfully uploaded!' });
-        // });
     } catch (error) {
-        // if (error.message.includes(':')) {
-        //     const [msg, code] = error.message.split(':');
-        //     return res.status(Number(code)).send(msg);
-        // }
         return res.status(500).send(error);
     }
 })

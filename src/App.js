@@ -6,6 +6,7 @@ import Header from './components/header/header';
 import StoreTool from './components/store-tool/store-tool';
 import ConsoleOut from "./components/console-out/console-out";
 import socketIOClient from "socket.io-client";
+import Grid from './components/grid/grid';
 
 class App extends React.Component {
   constructor(props) {
@@ -33,7 +34,10 @@ class App extends React.Component {
       <div className="App">
         <Header />
         <div className='container d-flex'>
-          <form style={{ width: '40vw' }} onSubmit={this.handleSubmit}>
+          <div className='container my-2'>
+            <Grid columns={['name', 'versions']} />
+          </div>
+          {/* <form style={{ width: '40vw' }} onSubmit={this.handleSubmit}>
             <div className='form-group mt-2 d-flex justify-content-around'>
               <label htmlFor='folder' > FolderPath </label>
               <input className='' name='folder' defaultValue='' />
@@ -47,11 +51,11 @@ class App extends React.Component {
             <div className='form-group d-flex justify-content-end'>
               {/* {folder ? (
                 ) : null} */}
-              <input type='button' className='btn btn-info mr-2'
+          {/*<input type='button' className='btn btn-info mr-2'
                 onClick={this.handleExecute} value='Execute' />
               <input type='submit' className='btn btn-primary' value='Submit' />
             </div>
-          </form>
+          </form>*/}
           {/* <StoreTool /> */}
         </div>
       </div>
