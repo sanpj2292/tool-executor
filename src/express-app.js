@@ -3,6 +3,7 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const expressIp = require('express-ip');
 const expIpMiddleware = expressIp().getIpInfoMiddleware;
+require('./routes/db/mongoose');
 
 
 const controller = require('./routes/controller/controller');
