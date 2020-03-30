@@ -33,10 +33,10 @@ class App extends React.Component {
     return (
       <div className="App">
         <Header />
-        <div className='container d-flex'>
-          {/* <div className='container my-2'>
+        <div className='container'>
+          <div className='container my-2 ml-1' style={{ width: '40vw' }}>
             <Grid columns={['name', 'versions']} />
-          </div> */}
+          </div>
           {/* <form style={{ width: '40vw' }} onSubmit={this.handleSubmit}>
             <div className='form-group mt-2 d-flex justify-content-around'>
               <label htmlFor='folder' > FolderPath </label>
@@ -56,7 +56,7 @@ class App extends React.Component {
               <input type='submit' className='btn btn-primary' value='Submit' />
             </div>
           </form>*/}
-          <StoreTool />
+          {/* <StoreTool /> */}
         </div>
       </div>
     );

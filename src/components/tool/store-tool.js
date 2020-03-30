@@ -17,9 +17,10 @@ class StoreTool extends React.Component {
 
     onSubmitHandler = e => {
         e.preventDefault();
-        const { jarFile } = this.state;
+        const { jarFile, instruction } = this.state;
         const data = new FormData();
         data.append('jarFile', jarFile);
+        data.append('instruction', instruction);
         axios.post('http://localhost:4000/uploadJarFile', data, {
             headers: {
                 'Content-type': 'multipart/form-data'

@@ -2,9 +2,9 @@ import React from 'react';
 import Markdown from '../markdown/markdown';
 import './preview.scss';
 
-const Preview = ({ name, previewValue, ...otherProps }) => {
+const Preview = ({ prevClassName, name, previewValue, ...otherProps }) => {
     return (
-        <div className='preview'>
+        <div className={`preview ${prevClassName}`.trim()}>
             <Markdown name={name}
                 value={previewValue}
                 {...otherProps}

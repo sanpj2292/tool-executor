@@ -39,6 +39,9 @@ const ToolSchema = new mongoose.Schema({
     },
     version: {
         type: 'Decimal128'
+    },
+    instruction: {
+        type: String
     }
 }, ToolSchemaOpts);
 
@@ -72,6 +75,7 @@ ToolSchema.statics.createTool = (fileObj) => ({
     version: 0.0,
     ...fileObj,
     versioned_name: '',
+    instruction: ''
 });
 
 const Tool = mongoose.model('tools', ToolSchema)

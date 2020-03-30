@@ -34,7 +34,8 @@ router.get('/aggregate', async (req, res) => {
                             version: '$version',
                             createdAt: '$createdAt',
                             updatedAt: '$updatedAt',
-                            versioned_name: '$versioned_name'
+                            versioned_name: '$versioned_name',
+                            instruction: '$instruction'
                         }
                     }
                 }
@@ -44,7 +45,8 @@ router.get('/aggregate', async (req, res) => {
                     _id: 0,
                     name: '$_id',
                     versions: '$versions',
-                    ids: '$grouped_versions.id'
+                    ids: '$grouped_versions.id',
+                    instructions: '$grouped_versions.instruction'
                 }
             }
         ]);
@@ -91,6 +93,7 @@ router.post('/toolSave', async (req, res) => {
         }
 
         const jarFile = req.files.file;
+        const { instruction } = req.body;
         const firstTool = await Tool.find({ name: jarFile.name })
             .sort({ version: 'desc' })
             .limit(1);
@@ -104,6 +107,7 @@ router.post('/toolSave', async (req, res) => {
             delete obj.updatedAt;
             toolObj = Tool.createTool(obj);
         }
+        toolObj.instruction = instruction;
         const tool = new Tool(toolObj);
         await tool.save();
         return res.status(201).send({ 'message': 'Successful Insertion' });

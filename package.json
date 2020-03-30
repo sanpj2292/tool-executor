@@ -15,6 +15,7 @@
     "mongoose": "^5.9.6",
     "node-sass": "^4.13.1",
     "react": "^16.13.0",
+    "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.0",
     "react-markdown": "^4.3.1",
     "react-scripts": "3.4.0",
