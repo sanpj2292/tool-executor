@@ -3,7 +3,7 @@ import './App.css';
 // import ConsoleOut from './components/console-out/console-out';
 // import FileUpload from "./components/file-upload/file-upload";
 import Header from './components/header/header';
-import StoreTool from './components/store-tool/store-tool';
+import StoreTool from './components/tool/store-tool';
 import ConsoleOut from "./components/console-out/console-out";
 import socketIOClient from "socket.io-client";
 import Grid from './components/grid/grid';
@@ -34,9 +34,9 @@ class App extends React.Component {
       <div className="App">
         <Header />
         <div className='container d-flex'>
-          <div className='container my-2'>
+          {/* <div className='container my-2'>
             <Grid columns={['name', 'versions']} />
-          </div>
+          </div> */}
           {/* <form style={{ width: '40vw' }} onSubmit={this.handleSubmit}>
             <div className='form-group mt-2 d-flex justify-content-around'>
               <label htmlFor='folder' > FolderPath </label>
@@ -56,7 +56,7 @@ class App extends React.Component {
               <input type='submit' className='btn btn-primary' value='Submit' />
             </div>
           </form>*/}
-          {/* <StoreTool /> */}
+          <StoreTool />
         </div>
       </div>
     );

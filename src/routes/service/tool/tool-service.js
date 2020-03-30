@@ -1,4 +1,5 @@
 const router = new require('express').Router();
+const stream = require('stream');
 // const path = require('path');
 // const jarFolderPath = path.join(__dirname, '../../uploads/jars');
 const Tool = require('../../models/tool');
@@ -53,7 +54,6 @@ router.get('/aggregate', async (req, res) => {
         return res.status(500).send(error);
     }
 });
-var stream = require('stream');
 router.get('/download/:id', async (req, res) => {
     try {
         const { id } = req.params;
