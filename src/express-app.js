@@ -21,6 +21,8 @@ app.use(cors(corsOps));
 app.use(fileUpload());
 app.use(expIpMiddleware);
 
+// for parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
 app.use('/', controller);
 
 // const server = http.createServer(app).listen(5000, () => {

@@ -35,7 +35,7 @@ router.get('/aggregate', async (req, res) => {
                             createdAt: '$createdAt',
                             updatedAt: '$updatedAt',
                             versioned_name: '$versioned_name',
-                            instruction: '$instruction'
+                            instruction: { $ifNull: ['$instruction', ""] }
                         }
                     }
                 }
@@ -92,7 +92,7 @@ router.post('/toolSave', async (req, res) => {
             return res.status(400).send('No Files were uploaded');
         }
 
-        const jarFile = req.files.file;
+        const jarFile = req.files.jarFile;
         const { instruction } = req.body;
         const firstTool = await Tool.find({ name: jarFile.name })
             .sort({ version: 'desc' })

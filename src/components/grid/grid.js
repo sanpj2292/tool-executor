@@ -5,6 +5,7 @@ import Popover from 'react-bootstrap/Popover';
 import Preview from "../preview/preview";
 import SyntaxStyleRenderer from "../markdown/syntax-style-renderer";
 import './grid.scss';
+import InstructionPreview from '../instruction/instruction-preview';
 
 class Grid extends React.Component {
 
@@ -16,16 +17,6 @@ class Grid extends React.Component {
         }
     }
 
-
-    async componentDidMount() {
-        try {
-            const rows = await axios.get('http://localhost:4000/service/aggregate');
-            this.setState({ rows: rows.data });
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     renderHeader = () => {
         const { columns } = this.props;
         return columns.map((column, i) => (
@@ -34,22 +25,15 @@ class Grid extends React.Component {
             </th>
         ));
     }
-    onChangeSelect = (e, rowInd) => {
-        const selectVal = e.currentTarget.value;
-        this.setState((prevState, prevProps) => {
-            let { selectedVals } = prevState;
-            selectedVals[rowInd] = selectVal;
-            return { ...prevState, selectedVals };
-        })
-    }
 
     renderGridSelect = (row, rowInd) => {
-        const { selectedVals } = this.state;
+        const { onChangeSelect } = this.props;
         return (
             <select key={`select-row-${rowInd}`}
                 className="custom-select custom-select-sm"
-                defaultValue={selectedVals[rowInd]}
-                onChange={e => this.onChangeSelect(e, rowInd)}>
+                defaultValue={0}
+                onClick={e => e.stopPropagation()}
+                onChange={e => onChangeSelect(e, rowInd)}>
                 {
                     row.versions.map((opt, i) => (
                         <option key={`${row.name}-opt-${i}`} value={i} >{opt}</option>
@@ -60,7 +44,6 @@ class Grid extends React.Component {
     }
 
     onDownload = async (e, rowInd) => {
-        alert('Come to onDownload')
         try {
             const { selectedVals, rows } = this.state;
             const versionSelVal = selectedVals[rowInd];
@@ -70,31 +53,9 @@ class Grid extends React.Component {
             console.error(error);
         }
     }
-    renderPopOver = (row, ind) => {
-        const { name, versions, instructions } = row;
-        const { selectedVals } = this.state;
-        const vInd = selectedVals[ind];
-        const instruction = !instructions[vInd] || instructions[vInd] === '' ? '###### Instruction Information not provided' : instructions[vInd];
-        return (
-            <Popover key={`popover-container-${vInd}-${ind}`} id="popover-basic"
-                className='mw-50vw'>
-                <Popover.Title key={`popover-title-${vInd}-${ind}`} as="h4">
-                    Guide for {name}-V{versions[vInd]}
-                </Popover.Title>
-                <Popover.Content key={`popover-content-${vInd}-${ind}`}>
-                    <Preview key={`prev-comp-${vInd}-${ind}`}
-                        name='preview-instruction'
-                        previewValue={instruction}
-                        renderers={{
-                            code: SyntaxStyleRenderer
-                        }}
-                    />
-                </Popover.Content>
-            </Popover>);
-    }
 
     render() {
-        const { rows } = this.state;
+        const { rows, onRowClick } = this.props;
         const { renderHeader, renderGridSelect } = this;
         return (
             <table className="table table-hover table-dark">
@@ -104,24 +65,19 @@ class Grid extends React.Component {
                 <tbody>
                     {
                         rows && rows.length > 0 ? (rows.map((row, ind) => (
-                            <OverlayTrigger key={`overlay-trig-${ind}`}
-                                trigger="click"
-                                placement="right-start"
-                                rootClose={true}
-                                overlay={this.renderPopOver(row, ind)}
-                            >
-                                <tr key={`row-${ind}`}>
-                                    <td key={`row-name-td-${ind}`}>
-                                        <div className='container' >
-                                            <u style={{ color: 'white' }}
-                                                onClick={e => this.onDownload(e, ind)}>
-                                                {row.name}
-                                            </u>
-                                        </div>
-                                    </td>
-                                    <td key={`row-grid-${ind}`}>{renderGridSelect(row, ind)}</td>
-                                </tr>
-                            </OverlayTrigger>
+                            <tr key={`row-${ind}`} onClick={e => onRowClick(e, row, ind)}>
+                                <td key={`row-name-td-${ind}`}>
+                                    <u style={{ color: 'white' }}>
+                                        {row.name}
+                                    </u>
+                                </td>
+                                <td key={`row-grid-${ind}`}>{renderGridSelect(row, ind)}</td>
+                                <td key={`row-grid-dwnlod-${ind}`}>
+                                    <i className="fas fa-download"
+                                        onClick={e => this.onDownload(e, ind)}>
+                                    </i>
+                                </td>
+                            </tr>
                         ))) : null
                     }
                 </tbody>
