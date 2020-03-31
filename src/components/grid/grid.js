@@ -1,11 +1,5 @@
 import React from 'react';
-import axios from 'axios';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
-import Preview from "../preview/preview";
-import SyntaxStyleRenderer from "../markdown/syntax-style-renderer";
 import './grid.scss';
-import InstructionPreview from '../instruction/instruction-preview';
 
 class Grid extends React.Component {
 
