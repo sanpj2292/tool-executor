@@ -3,15 +3,14 @@ import axios from 'axios';
 import FileUpload from '../file-upload/file-upload';
 import './store-tool.scss';
 import InstructionInput from '../instruction/instruction';
+import { connect } from "react-redux";
+import { previewChange } from "../../redux/actions";
 
 class StoreTool extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             jarFile: null,
-            instruction: '',
-            showPreview: false,
-            disablePreview: true
         };
     }
 
@@ -49,8 +48,12 @@ class StoreTool extends React.Component {
         }
     };
 
+    handleInput = e => {
+        this.props.previewChange(e.currentTarget.value);
+    }
+
     render() {
-        const { handleInput, preview } = this.props;
+        const { preview } = this.props;
         return (
             <form className='container border store-tool' onSubmit={this.onSubmitHandler} encType='multipart/form-data'>
                 <div className='form-group py-2'>
@@ -63,7 +66,7 @@ class StoreTool extends React.Component {
                 <div className='form-group' >
                     <InstructionInput
                         instruction={preview}
-                        handleInstruction={handleInput}
+                        handleInstruction={this.handleInput}
                         name='instruction'
                         label='Instructions'
                     />
@@ -76,5 +79,14 @@ class StoreTool extends React.Component {
     }
 };
 
+const mapStateToProps = ({ preview }) => {
+    return { preview };
+}
 
-export default StoreTool;
+const mapDispatchToProps = dispatch => {
+    return {
+        previewChange: (preview) => dispatch(previewChange(preview))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StoreTool);

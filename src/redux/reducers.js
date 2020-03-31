@@ -1,4 +1,4 @@
-import { GET_TOOL_LIST, SHOW_CREATE_FORM } from "./action-types";
+import { GET_TOOL_LIST, SHOW_CREATE_FORM, PREVIEW_CHANGE } from "./action-types";
 
 const INITIAL_STATE = {
     rows: [],
@@ -18,6 +18,11 @@ const toolReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 ...action.payload
+            };
+        case PREVIEW_CHANGE:
+            return {
+                ...state,
+                preview: action.payload
             };
         default:
             return state;

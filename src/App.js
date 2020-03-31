@@ -23,13 +23,6 @@ class App extends React.Component {
     };
   }
 
-  showCreateForm = e => {
-    this.setState((prevState, prevProps) => ({
-      createForm: !prevState.createForm,
-      preview: ''
-    }));
-  }
-
   handleSubmit = (e) => {
     e.preventDefault();
     const folderVal = e.target.folder.value;
@@ -60,16 +53,6 @@ class App extends React.Component {
         console.error(error);
       }
     }
-  }
-
-  onRowClick = (e, row, ind) => {
-    const { instructions } = row;
-    const { selectedVals } = this.state;
-    const vInd = selectedVals[ind];
-    const instruction = !instructions[vInd] || instructions[vInd] === '' ? '###### Instruction Information not provided' : instructions[vInd];
-    this.setState({
-      preview: instruction
-    });
   }
 
   onChangeSelect = (e, rowInd) => {
@@ -126,9 +109,8 @@ class App extends React.Component {
             </div>
             <div className='grid-container mr-auto my-2 ml-2'>
               {
-                createForm ? <StoreTool preview={preview} handleInput={this.handleInstruction} /> : <Grid rows={rows} columns={['name', 'versions', 'download', 'delete']}
+                createForm ? <StoreTool preview={preview} /> : <Grid rows={rows} columns={['name', 'versions', 'download', 'delete']}
                   selectedVals={selectedVals}
-                  onRowClick={this.onRowClick}
                   onChangeSelect={this.onChangeSelect}
                   onDelete={this.onDelete} />
               }

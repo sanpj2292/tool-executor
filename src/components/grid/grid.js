@@ -1,5 +1,7 @@
 import React from 'react';
 import './grid.scss';
+import { previewChange } from "../../redux/actions";
+import { connect } from "react-redux";
 
 class Grid extends React.Component {
 
@@ -18,6 +20,14 @@ class Grid extends React.Component {
                 `${column[0].toUpperCase()}${column.substring(1)}`}
             </th>
         ));
+    }
+
+    onRowClick = (e, row, ind) => {
+        const { instructions } = row;
+        const { selectedVals, previewChange } = this.props;
+        const vInd = selectedVals[ind];
+        const instruction = !instructions[vInd] || instructions[vInd] === '' ? '###### Instruction Information not provided' : instructions[vInd];
+        previewChange(instruction);
     }
 
     renderGridSelect = (row, rowInd) => {
@@ -49,7 +59,7 @@ class Grid extends React.Component {
     }
 
     render() {
-        const { rows, onRowClick, onDelete } = this.props;
+        const { rows, onDelete } = this.props;
         const { renderHeader, renderGridSelect } = this;
         return (
             <table className="table table-hover table-dark">
@@ -59,7 +69,7 @@ class Grid extends React.Component {
                 <tbody>
                     {
                         rows && rows.length > 0 ? (rows.map((row, ind) => (
-                            <tr key={`row-${ind}`} onClick={e => onRowClick(e, row, ind)}>
+                            <tr key={`row-${ind}`} onClick={e => this.onRowClick(e, row, ind)}>
                                 <td key={`row-name-td-${ind}`}>
                                     <u style={{ color: 'white' }}>
                                         {row.name}
@@ -89,4 +99,16 @@ class Grid extends React.Component {
 
 }
 
-export default Grid;
+const mapStateToProps = (state) => {
+    const gridState = { ...state }
+    delete gridState.createForm;
+    return gridState;
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onRowClick: (preview) => dispatch(previewChange(preview))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Grid);

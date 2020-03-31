@@ -1,7 +1,7 @@
 import React from "react";
 import './instruction.scss';
 
-const InstructionInput = ({ instruction, handleInstruction, label }) => {
+const InstructionInput = ({ instruction, handleInstruction }) => {
     return (
         <div className='instruction-container'>
             <label htmlFor='instruction'>Instructions</label>
