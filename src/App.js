@@ -101,7 +101,6 @@ class App extends React.Component {
               {
                 createForm ? <StoreTool preview={preview} /> : <Grid rows={rows} columns={['name', 'versions', 'download', 'delete']}
                   selectedVals={selectedVals}
-                  onChangeSelect={this.onChangeSelect}
                   onDelete={this.onDelete} />
               }
             </div>
