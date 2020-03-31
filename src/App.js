@@ -7,6 +7,9 @@ import socketIOClient from "socket.io-client";
 import Grid from './components/grid/grid';
 import Card from 'react-bootstrap/Card';
 import InstructionPreview from "./components/instruction/instruction-preview";
+import { connect } from "react-redux";
+import { getToolList, showCreateForm } from "./redux/actions";
+
 
 class App extends React.Component {
   constructor(props) {
@@ -47,7 +50,8 @@ class App extends React.Component {
       try {
         const rows = await axios.get('http://localhost:4000/service/aggregate');
         const selectedVals = rows.data.map(val => 0);
-        this.setState({
+        // Using redux we have put this into state
+        this.props.getToolList({
           rows: rows.data,
           preview: rows.data[0].instructions[0],
           selectedVals
@@ -84,10 +88,8 @@ class App extends React.Component {
       const row = rows[rowInd];
       const versionSelVal = selectedVals[rowInd];
       const id = row.ids[versionSelVal];
-      const versionedName = row.versionedNames[versionSelVal];
       const res = await axios.delete(`http://localhost:4000/service/delete/${id}`);
-      console.log(res.data);
-      alert(`${versionedName} has been deleted Successfully`);
+      alert(`${res.data.versioned_name} has been deleted Successfully`);
       this.setState((prevState, prevProps) => {
         // Removing elements in respective arrays
         prevState.rows[rowInd].ids.splice(versionSelVal, 1);
@@ -105,7 +107,8 @@ class App extends React.Component {
 
 
   render() {
-    const { createForm, preview, rows, selectedVals } = this.state;
+    // const { preview, rows, selectedVals } = this.state;
+    const { showCreateForm, createForm, rows, selectedVals, preview } = this.props;
     return (
       <div className="App">
         <Header />
@@ -113,7 +116,10 @@ class App extends React.Component {
           <div className='d-flex flex-column card-container'>
             <div className={`${!createForm ? 'ml-auto' : 'mr-auto ml-2'} py-2`} >
               <button className='btn btn-primary'
-                onClick={this.showCreateForm} >
+                onClick={() => showCreateForm({
+                  createForm: !createForm,
+                  preview: ''
+                })} >
                 {!createForm ? <i className="fas fa-plus" /> : null}
                 {!createForm ? ' Create' : 'Back'}
               </button>
@@ -136,4 +142,17 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    ...state
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getToolList: (stateData) => dispatch(getToolList(stateData)),
+    showCreateForm: (state) => dispatch(showCreateForm(state))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
