@@ -1,6 +1,6 @@
 import React from 'react';
 import './grid.scss';
-import { previewChange } from "../../redux/actions";
+import { previewChange, versionChange } from "../../redux/actions";
 import { connect } from "react-redux";
 
 class Grid extends React.Component {
@@ -30,14 +30,21 @@ class Grid extends React.Component {
         previewChange(instruction);
     }
 
+    onChangeSelect = (e, rowInd) => {
+        const selectVal = e.currentTarget.value;
+        let { selectedVals, rows, versionChange } = this.props;
+        selectedVals[rowInd] = Number(selectVal);
+        const preview = rows[rowInd].instructions[selectVal];
+        versionChange({ selectedVals, preview });
+    }
+
     renderGridSelect = (row, rowInd) => {
-        const { onChangeSelect } = this.props;
         return (
             <select key={`select-row-${rowInd}`}
                 className="custom-select custom-select-sm"
                 defaultValue={0}
                 onClick={e => e.stopPropagation()}
-                onChange={e => onChangeSelect(e, rowInd)}>
+                onChange={e => this.onChangeSelect(e, rowInd)}>
                 {
                     row.versions.map((opt, i) => (
                         <option key={`${row.name}-opt-${i}`} value={i} >{opt}</option>
@@ -107,7 +114,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onRowClick: (preview) => dispatch(previewChange(preview))
+        previewChange: (preview) => dispatch(previewChange(preview)),
+        versionChange: (preview) => dispatch(versionChange(preview))
     }
 }
 

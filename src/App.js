@@ -55,16 +55,6 @@ class App extends React.Component {
     }
   }
 
-  onChangeSelect = (e, rowInd) => {
-    const selectVal = e.currentTarget.value;
-    this.setState((prevState, prevProps) => {
-      let { selectedVals, rows } = prevState;
-      selectedVals[rowInd] = Number(selectVal);
-      const preview = rows[rowInd].instructions[selectVal];
-      return { ...prevState, selectedVals, preview };
-    });
-  }
-
   onDelete = async (e, rowInd) => {
     try {
       const { selectedVals, rows } = this.state;
