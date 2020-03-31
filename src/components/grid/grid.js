@@ -45,7 +45,7 @@ class Grid extends React.Component {
 
     onDownload = async (e, rowInd) => {
         try {
-            const { selectedVals, rows } = this.state;
+            const { selectedVals, rows } = this.props;
             const versionSelVal = selectedVals[rowInd];
             const id = rows[rowInd].ids[versionSelVal];
             window.location = `http://localhost:4000/service/download/${id}`;
@@ -55,7 +55,7 @@ class Grid extends React.Component {
     }
 
     render() {
-        const { rows, onRowClick } = this.props;
+        const { rows, onRowClick, onDelete } = this.props;
         const { renderHeader, renderGridSelect } = this;
         return (
             <table className="table table-hover table-dark">
@@ -76,6 +76,14 @@ class Grid extends React.Component {
                                     <i className="fas fa-download"
                                         onClick={e => this.onDownload(e, ind)}>
                                     </i>
+                                </td>
+                                <td key={`row-del-${ind}`}>
+                                    <i className="far fa-trash-alt"
+                                        onClick={e => {
+                                            e.stopPropagation();
+                                            onDelete(e, ind);
+                                        }}
+                                    ></i>
                                 </td>
                             </tr>
                         ))) : null

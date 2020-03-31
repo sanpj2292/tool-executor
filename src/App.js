@@ -78,9 +78,34 @@ class App extends React.Component {
     });
   }
 
+  onDelete = async (e, rowInd) => {
+    try {
+      const { selectedVals, rows } = this.state;
+      const row = rows[rowInd];
+      const versionSelVal = selectedVals[rowInd];
+      const id = row.ids[versionSelVal];
+      const versionedName = row.versionedNames[versionSelVal];
+      const res = await axios.delete(`http://localhost:4000/service/delete/${id}`);
+      console.log(res.data);
+      alert(`${versionedName} has been deleted Successfully`);
+      this.setState((prevState, prevProps) => {
+        // Removing elements in respective arrays
+        prevState.rows[rowInd].ids.splice(versionSelVal, 1);
+        prevState.rows[rowInd].versionedNames.splice(versionSelVal, 1);
+        prevState.rows[rowInd].versions.splice(versionSelVal, 1);
+        prevState.rows[rowInd].instructions.splice(versionSelVal, 1);
+        // Setting the preview value
+        const preview = prevState.rows[rowInd].instructions[versionSelVal];
+        return { ...prevState, preview };
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   render() {
-    const { createForm, preview, rows } = this.state;
+    const { createForm, preview, rows, selectedVals } = this.state;
     return (
       <div className="App">
         <Header />
@@ -95,9 +120,11 @@ class App extends React.Component {
             </div>
             <div className='grid-container mr-auto my-2 ml-2'>
               {
-                createForm ? <StoreTool preview={preview} handleInput={this.handleInstruction} /> : <Grid rows={rows} columns={['name', 'versions', 'download']}
+                createForm ? <StoreTool preview={preview} handleInput={this.handleInstruction} /> : <Grid rows={rows} columns={['name', 'versions', 'download', 'delete']}
+                  selectedVals={selectedVals}
                   onRowClick={this.onRowClick}
-                  onChangeSelect={this.onChangeSelect} />
+                  onChangeSelect={this.onChangeSelect}
+                  onDelete={this.onDelete} />
               }
             </div>
           </div>

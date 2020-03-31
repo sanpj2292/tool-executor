@@ -18,6 +18,7 @@ router.get('/', (req, res) => {
         `);
 });
 
+// 
 router.get('/aggregate', async (req, res) => {
     try {
         const aggregatedTool = await Tool.aggregate([
@@ -46,7 +47,8 @@ router.get('/aggregate', async (req, res) => {
                     name: '$_id',
                     versions: '$versions',
                     ids: '$grouped_versions.id',
-                    instructions: '$grouped_versions.instruction'
+                    instructions: '$grouped_versions.instruction',
+                    versionedNames: '$grouped_versions.versioned_name'
                 }
             }
         ]);
@@ -56,6 +58,8 @@ router.get('/aggregate', async (req, res) => {
         return res.status(500).send(error);
     }
 });
+
+// To Download the jar file from DB
 router.get('/download/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -114,6 +118,19 @@ router.post('/toolSave', async (req, res) => {
     } catch (error) {
         return res.status(500).send(error);
     }
-})
+});
+
+router.delete('/delete/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const tool = await Tool.findOneAndDelete({ _id: id });
+        if (!tool) {
+            return res.status(404).send('Mentioned Tool is not found');
+        }
+        return res.send(tool);
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+});
 
 module.exports = router;
