@@ -21,15 +21,10 @@ class StoreTool extends React.Component {
         const { jarFile } = this.state;
         const { preview } = this.props;
         const data = new FormData();
-        data.append('jarFile', jarFile, jarFile.name);
+        data.append('jarFile', jarFile);
         data.append('instruction', preview);
-        axios.post('http://localhost:4000/service/toolSave', data, {
-            headers: {
-                'Content-type': 'multipart/form-data'
-            }
-        }).then(res => {
+        axios.post('http://localhost:4000/service/toolSave', data).then(res => {
             const { data: { message } } = res;
-            console.log(message);
             alert(message);
         }).catch(err => console.error(err));
     };
@@ -57,7 +52,7 @@ class StoreTool extends React.Component {
     render() {
         const { handleInput, preview } = this.props;
         return (
-            <form className='container border store-tool' onSubmit={this.onSubmitHandler}>
+            <form className='container border store-tool' onSubmit={this.onSubmitHandler} encType='multipart/form-data'>
                 <div className='form-group py-2'>
                     <FileUpload extension='jar'
                         name='jarFile'
