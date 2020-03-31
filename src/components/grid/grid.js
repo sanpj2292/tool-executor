@@ -1,6 +1,7 @@
 import React from 'react';
 import './grid.scss';
-import { previewChange, versionChange } from "../../redux/actions";
+import axios from 'axios';
+import { previewChange, versionChange, deleteTool } from "../../redux/actions";
 import { connect } from "react-redux";
 
 class Grid extends React.Component {
@@ -65,8 +66,29 @@ class Grid extends React.Component {
         }
     }
 
+    onDelete = async (e, rowInd) => {
+        try {
+            const { selectedVals, rows, deleteTool } = this.props;
+            const row = rows[rowInd];
+            const versionSelVal = selectedVals[rowInd];
+            const id = row.ids[versionSelVal];
+            const res = await axios.delete(`http://localhost:4000/service/delete/${id}`);
+            alert(`${res.data.versioned_name} has been deleted Successfully`);
+            // Removing elements in respective arrays
+            rows[rowInd].ids.splice(versionSelVal, 1);
+            rows[rowInd].versionedNames.splice(versionSelVal, 1);
+            rows[rowInd].versions.splice(versionSelVal, 1);
+            rows[rowInd].instructions.splice(versionSelVal, 1);
+            // Setting the preview value
+            const preview = rows[rowInd].instructions[versionSelVal];
+            deleteTool({ rows, preview });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     render() {
-        const { rows, onDelete } = this.props;
+        const { rows } = this.props;
         const { renderHeader, renderGridSelect } = this;
         return (
             <table className="table table-hover table-dark">
@@ -92,7 +114,7 @@ class Grid extends React.Component {
                                     <i className="far fa-trash-alt"
                                         onClick={e => {
                                             e.stopPropagation();
-                                            onDelete(e, ind);
+                                            this.onDelete(e, ind);
                                         }}
                                     ></i>
                                 </td>
@@ -115,7 +137,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
     return {
         previewChange: (preview) => dispatch(previewChange(preview)),
-        versionChange: (preview) => dispatch(versionChange(preview))
+        versionChange: (preview) => dispatch(versionChange(preview)),
+        deleteTool: ({ rows, preview }) => dispatch(deleteTool({ rows, preview }))
     }
 }
 

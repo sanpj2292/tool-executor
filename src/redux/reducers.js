@@ -1,4 +1,7 @@
-import { GET_TOOL_LIST, SHOW_CREATE_FORM, PREVIEW_CHANGE, VERSION_CHANGE } from "./action-types";
+import {
+    GET_TOOL_LIST, SHOW_CREATE_FORM,
+    PREVIEW_CHANGE, VERSION_CHANGE, DELETE_TOOL
+} from "./action-types";
 
 const INITIAL_STATE = {
     rows: [],
@@ -20,6 +23,11 @@ const toolReducer = (state = INITIAL_STATE, action) => {
                 ...action.payload
             };
         case VERSION_CHANGE:
+            return {
+                ...state,
+                ...action.payload
+            };
+        case DELETE_TOOL:
             return {
                 ...state,
                 ...action.payload
