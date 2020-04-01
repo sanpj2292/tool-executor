@@ -89,8 +89,6 @@ class Grid extends React.Component {
 
     render() {
         const { renderHeader, renderGridSelect, props: { rows } } = this;
-        console.log('Rpws Grod');
-        console.log(rows);
         return (
             <table className="table table-hover table-dark">
                 <thead>
