@@ -1,4 +1,4 @@
-.mw-50vw {
+.mw-40vw {
     max-width: 40vw !important;
     left: 8px !important;
 }
@@ -26,4 +26,8 @@
 
 .bs-popover-auto[x-placement^=right-start] .arrow::after, .bs-popover-auto[x-placement^=right-start] .arrow::before, .bs-popover-right-start .arrow::after, .bs-popover-right-start .arrow::before {
     border-width: .5rem .5rem .5rem 0;
+}
+
+.row-auto {
+    overflow: auto;
 }

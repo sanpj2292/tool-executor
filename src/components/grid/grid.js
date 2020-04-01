@@ -94,7 +94,7 @@ class Grid extends React.Component {
                 <thead>
                     <tr>{renderHeader()}</tr>
                 </thead>
-                <tbody>
+                <tbody className='row-auto'>
                     {
                         rows && rows.length > 0 ? (rows.map((row, ind) => (
                             <tr key={`row-${ind}`} onClick={e => this.onRowClick(e, row, ind)}>

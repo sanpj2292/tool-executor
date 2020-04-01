@@ -4,7 +4,7 @@ import FileUpload from '../file-upload/file-upload';
 import './store-tool.scss';
 import InstructionInput from '../instruction/instruction';
 import { connect } from "react-redux";
-import { previewChange, insertTool } from "../../redux/actions";
+import { insertTool } from "../../redux/actions";
 
 class StoreTool extends React.Component {
     constructor(props) {
@@ -13,7 +13,6 @@ class StoreTool extends React.Component {
             jarFile: null,
         };
     }
-
 
     onSubmitHandler = e => {
         e.preventDefault();
@@ -48,10 +47,6 @@ class StoreTool extends React.Component {
         }
     };
 
-    handleInput = e => {
-        this.props.previewChange(e.currentTarget.value);
-    }
-
     render() {
         const { preview } = this.props;
         return (
@@ -66,7 +61,6 @@ class StoreTool extends React.Component {
                 <div className='form-group' >
                     <InstructionInput
                         instruction={preview}
-                        handleInstruction={this.handleInput}
                         name='instruction'
                         label='Instructions'
                     />
@@ -85,7 +79,6 @@ const mapStateToProps = ({ preview }) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        previewChange: (preview) => dispatch(previewChange(preview)),
         insertTool: (row) => dispatch(insertTool(row))
     }
 }

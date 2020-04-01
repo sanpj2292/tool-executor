@@ -52,7 +52,6 @@ class App extends React.Component {
   }
 
   render() {
-    // const { preview, rows, selectedVals } = this.state;
     const { showCreateForm, createForm, rows, selectedVals, preview } = this.props;
     return (
       <div className="App">
@@ -69,7 +68,7 @@ class App extends React.Component {
                 {!createForm ? ' Create' : 'Back'}
               </button>
             </div>
-            <div className='grid-container mr-auto my-2 ml-2'>
+            <div className='table-responsive grid-container mr-auto my-2 ml-2'>
               {
                 createForm ? <StoreTool preview={preview} /> : <Grid rows={rows} columns={['name', 'versions', 'download', 'delete']}
                   selectedVals={selectedVals} />

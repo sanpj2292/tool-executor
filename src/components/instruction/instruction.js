@@ -1,7 +1,14 @@
 import React from "react";
 import './instruction.scss';
+import { connect } from "react-redux";
+import { previewChange } from "../../redux/actions";
 
-const InstructionInput = ({ instruction, handleInstruction }) => {
+const InstructionInput = ({ instruction, previewChange }) => {
+
+    const handleInstruction = (e) => {
+        previewChange(e.currentTarget.value);
+    }
+
     return (
         <div className='instruction-container'>
             <label htmlFor='instruction'>Instructions</label>
@@ -11,4 +18,10 @@ const InstructionInput = ({ instruction, handleInstruction }) => {
     );
 }
 
-export default InstructionInput;
+const mapDispatchToProps = dispatch => {
+    return {
+        previewChange: (preview) => dispatch(previewChange(preview))
+    }
+};
+
+export default connect(null, mapDispatchToProps)(InstructionInput);

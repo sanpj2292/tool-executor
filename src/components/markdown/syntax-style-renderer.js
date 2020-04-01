@@ -10,7 +10,8 @@ class SyntaxStyleRenderer extends PureComponent {
     };
 
     static defaultProps = {
-        language: null
+        language: null,
+        value: ''
     };
 
     render() {

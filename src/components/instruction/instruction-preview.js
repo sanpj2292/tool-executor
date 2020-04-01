@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 const InstructionPreview = ({ isPreview, preview, containerClass }) => {
     const previewValue = (!preview || preview === null) && !isPreview ? '##### Information not provided' : preview;
     return (
-        <div className={containerClass}>
+        <div className={`auto-scroll ${containerClass}`}>
             <div>
                 <h4>Instruction{!isPreview ? '' : ' Preview'}</h4>
             </div>
