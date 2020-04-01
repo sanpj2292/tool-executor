@@ -42,11 +42,16 @@ const toolReducer = (state = INITIAL_STATE, action) => {
             };
         case INSERT_TOOL:
             const rows = insertRow(state, action.payload);
+            let { selectedVals } = state;
+            if (selectedVals.length !== rows.length) {
+                selectedVals.push(0);
+            }
             return {
                 ...state,
                 rows,
                 preview: rows[0].instructions[0],
-                createForm: !state.createForm
+                createForm: !state.createForm,
+                selectedVals
             }
         default:
             return state;

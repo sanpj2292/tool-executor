@@ -11,7 +11,6 @@ const ToolSchema = new mongoose.Schema({
     },
     versioned_name: {
         type: String,
-        // required: [true, 'Versioned_name has to be provided'],
         trim: true
     },
     size: {
@@ -32,10 +31,6 @@ const ToolSchema = new mongoose.Schema({
     },
     md5: {
         type: String
-    },
-    data: {
-        type: 'Buffer',
-        required: [true, 'jar file is required'],
     },
     version: {
         type: 'Decimal128'

@@ -43,7 +43,7 @@ class Grid extends React.Component {
         return (
             <select key={`select-row-${rowInd}`}
                 className="custom-select custom-select-sm"
-                defaultValue={0}
+                defaultValue={this.props.selectedVals[rowInd]}
                 onClick={e => e.stopPropagation()}
                 onChange={e => this.onChangeSelect(e, rowInd)}>
                 {
@@ -60,6 +60,7 @@ class Grid extends React.Component {
             const { selectedVals, rows } = this.props;
             const versionSelVal = selectedVals[rowInd];
             const id = rows[rowInd].ids[versionSelVal];
+            console.log(rows);
             window.location = `http://localhost:4000/service/download/${id}`;
         } catch (error) {
             console.error(error);
@@ -70,18 +71,32 @@ class Grid extends React.Component {
         try {
             const { selectedVals, rows, deleteTool } = this.props;
             const row = rows[rowInd];
+            console.log(selectedVals);
             const versionSelVal = selectedVals[rowInd];
+            console.log(row.ids);
             const id = row.ids[versionSelVal];
             const res = await axios.delete(`http://localhost:4000/service/delete/${id}`);
             alert(`${res.data.versioned_name} has been deleted Successfully`);
-            // Removing elements in respective arrays
-            rows[rowInd].ids.splice(versionSelVal, 1);
-            rows[rowInd].versionedNames.splice(versionSelVal, 1);
-            rows[rowInd].versions.splice(versionSelVal, 1);
-            rows[rowInd].instructions.splice(versionSelVal, 1);
-            // Setting the preview value
-            const preview = rows[rowInd].instructions[versionSelVal];
-            deleteTool({ rows, preview });
+            let preview = '';
+            if (rows.length >= 1) {
+                if (rows[rowInd].ids.length > 1) {
+                    // Removing elements in respective arrays
+                    rows[rowInd].ids.splice(versionSelVal, 1);
+                    rows[rowInd].versionedNames.splice(versionSelVal, 1);
+                    rows[rowInd].versions.splice(versionSelVal, 1);
+                    rows[rowInd].instructions.splice(versionSelVal, 1);
+                    // Setting the preview value
+                    preview = rows[rowInd].instructions[versionSelVal];
+                    if (versionSelVal - 1 > 0) {
+                        selectedVals[rowInd] -= 1;
+                    } else {
+                        selectedVals[rowInd] = 0;
+                    }
+                } else {
+                    rows.splice(rowInd, 1);
+                }
+            }
+            deleteTool({ rows, preview, selectedVals });
         } catch (error) {
             console.error(error);
         }
@@ -137,7 +152,7 @@ const mapDispatchToProps = dispatch => {
     return {
         previewChange: (preview) => dispatch(previewChange(preview)),
         versionChange: (preview) => dispatch(versionChange(preview)),
-        deleteTool: ({ rows, preview }) => dispatch(deleteTool({ rows, preview }))
+        deleteTool: ({ rows, preview, selectedVals }) => dispatch(deleteTool({ rows, preview, selectedVals }))
     }
 }
 

@@ -34,11 +34,12 @@ export const versionChange = ({ preview, selectedVals }) => ({
     }
 });
 
-export const deleteTool = ({ rows, preview }) => ({
+export const deleteTool = ({ rows, preview, selectedVals }) => ({
     type: DELETE_TOOL,
     payload: {
         rows,
-        preview
+        preview,
+        selectedVals
     }
 });
 

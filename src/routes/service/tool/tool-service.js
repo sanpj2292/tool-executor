@@ -1,9 +1,9 @@
+const fs = require('fs');
 const router = new require('express').Router();
-const stream = require('stream');
-// const path = require('path');
-// const jarFolderPath = path.join(__dirname, '../../uploads/jars');
+const path = require('path');
+const jarFolderPath = path.join(__dirname, '../../../uploads/jars');
 const Tool = require('../../models/tool');
-const { groupConfig, projectConfig } = require('./utils');
+const { groupConfig, projectConfig, getFolderFromName } = require('./utils');
 
 router.get('/', (req, res) => {
     return res.status(400)
@@ -38,16 +38,15 @@ router.get('/download/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const fileMetaData = await Tool.findById(id);
-        const { mimetype, encoding, versioned_name, data } = fileMetaData;
-        let fileContents = Buffer.from(data, encoding);
+        const { mimetype, versioned_name } = fileMetaData;
+        // get Folder from meta-data
+        const folder = getFolderFromName(fileMetaData);
         res.set('Content-disposition', 'attachment; filename=' + versioned_name);
         res.set('Content-Type', mimetype);
-        var readStream = new stream.PassThrough();
-        readStream.end(fileContents);
-
-        readStream.pipe(res);
+        // Download from File-system
+        let fstream = fs.createReadStream(`${jarFolderPath}/${folder}/${versioned_name}`);
+        fstream.pipe(res);
     } catch (error) {
-        console.log('error occurred');
         return res.status(500).send(error);
     }
 });
@@ -76,7 +75,7 @@ router.post('/toolSave', async (req, res) => {
             .limit(1);
 
         let toolObj = jarFile;
-        if (firstTool !== null && firstTool.length > 0) {
+        if (firstTool && firstTool !== null && firstTool.length > 0) {
             let obj = firstTool[0].toObject();
             delete obj._id;
             delete obj.__v;
@@ -86,7 +85,16 @@ router.post('/toolSave', async (req, res) => {
         }
         toolObj.instruction = instruction;
         const tool = new Tool(toolObj);
-        await tool.save();
+        const savedTool = await tool.save();
+        // Saving File inside the Server
+        const jarFolder = getFolderFromName(savedTool);
+        // Check for existence of directory, if not create it!
+        const directory = `${jarFolderPath}/${jarFolder}`;
+        if (!fs.existsSync(directory)) {
+            fs.mkdirSync(directory);
+        }
+        await jarFile.mv(`${directory}/${savedTool.versioned_name}`);
+        // Aggregation needed to assit in render process on client-side
         const aggregatedTool = await Tool.aggregate([
             { $match: { name: toolObj.name } },
             { $group: groupConfig },
@@ -105,7 +113,10 @@ router.delete('/delete/:id', async (req, res) => {
         if (!tool) {
             return res.status(404).send('Mentioned Tool is not found');
         }
-        return res.send(tool);
+        // Remove file from it's Path in Server
+        const jarFolder = getFolderFromName(tool);
+        fs.unlinkSync(`${jarFolderPath}/${jarFolder}/${tool.versioned_name}`)
+        return res.status(200).send(tool);
     } catch (error) {
         return res.status(500).send(error);
     }

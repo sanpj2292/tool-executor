@@ -25,7 +25,13 @@ const projectConfig = {
     versionedNames: '$grouped_versions.versioned_name'
 };
 
+const getFolderFromName = ({ name }) => {
+    const i = name.lastIndexOf('.')
+    return name.substring(0, i);
+};
+
 module.exports = {
     groupConfig,
-    projectConfig
+    projectConfig,
+    getFolderFromName
 }
