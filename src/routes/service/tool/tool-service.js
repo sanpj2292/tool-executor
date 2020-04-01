@@ -3,6 +3,7 @@ const stream = require('stream');
 // const path = require('path');
 // const jarFolderPath = path.join(__dirname, '../../uploads/jars');
 const Tool = require('../../models/tool');
+const { groupConfig, projectConfig } = require('./utils');
 
 router.get('/', (req, res) => {
     return res.status(400)
@@ -22,35 +23,8 @@ router.get('/', (req, res) => {
 router.get('/aggregate', async (req, res) => {
     try {
         const aggregatedTool = await Tool.aggregate([
-            {
-                $group: {
-                    _id: '$name',
-                    versions: {
-                        $push: { $convert: { input: '$version', to: 'double' } }
-                    },
-                    grouped_versions: {
-                        $push: {
-                            id: '$_id',
-                            mimetype: '$mimetype',
-                            version: '$version',
-                            createdAt: '$createdAt',
-                            updatedAt: '$updatedAt',
-                            versioned_name: '$versioned_name',
-                            instruction: { $ifNull: ['$instruction', ""] }
-                        }
-                    }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    name: '$_id',
-                    versions: '$versions',
-                    ids: '$grouped_versions.id',
-                    instructions: '$grouped_versions.instruction',
-                    versionedNames: '$grouped_versions.versioned_name'
-                }
-            }
+            { $group: groupConfig },
+            { $project: projectConfig }
         ]);
         return res.status(200).send(aggregatedTool);
     } catch (error) {
@@ -113,8 +87,12 @@ router.post('/toolSave', async (req, res) => {
         toolObj.instruction = instruction;
         const tool = new Tool(toolObj);
         await tool.save();
-        return res.status(201).send({ 'message': 'Successful Insertion' });
-
+        const aggregatedTool = await Tool.aggregate([
+            { $match: { name: toolObj.name } },
+            { $group: groupConfig },
+            { $project: projectConfig }
+        ]);
+        return res.status(201).send({ row: aggregatedTool[0], msg: 'Successfully created!' });
     } catch (error) {
         return res.status(500).send(error);
     }

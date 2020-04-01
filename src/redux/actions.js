@@ -1,6 +1,7 @@
 import {
     GET_TOOL_LIST, SHOW_CREATE_FORM,
-    PREVIEW_CHANGE, VERSION_CHANGE, DELETE_TOOL
+    PREVIEW_CHANGE, VERSION_CHANGE, DELETE_TOOL,
+    INSERT_TOOL
 } from "./action-types";
 
 export const getToolList = ({ rows, preview, selectedVals }) => ({
@@ -39,4 +40,9 @@ export const deleteTool = ({ rows, preview }) => ({
         rows,
         preview
     }
+});
+
+export const insertTool = (row) => ({
+    type: INSERT_TOOL,
+    payload: row
 });

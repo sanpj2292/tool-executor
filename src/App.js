@@ -76,8 +76,7 @@ class App extends React.Component {
               }
             </div>
           </div>
-          <InstructionPreview className='mr-auto px-2' isPreview={createForm}
-            previewText={(!preview || preview === null) && !createForm ? '##### Information not provided' : preview} />
+          <InstructionPreview containerClass='mr-auto px-2' />
         </Card>
       </div>
     );

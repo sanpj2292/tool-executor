@@ -4,7 +4,7 @@ import FileUpload from '../file-upload/file-upload';
 import './store-tool.scss';
 import InstructionInput from '../instruction/instruction';
 import { connect } from "react-redux";
-import { previewChange } from "../../redux/actions";
+import { previewChange, insertTool } from "../../redux/actions";
 
 class StoreTool extends React.Component {
     constructor(props) {
@@ -18,13 +18,14 @@ class StoreTool extends React.Component {
     onSubmitHandler = e => {
         e.preventDefault();
         const { jarFile } = this.state;
-        const { preview } = this.props;
+        const { preview, insertTool } = this.props;
         const data = new FormData();
         data.append('jarFile', jarFile);
         data.append('instruction', preview);
         axios.post('http://localhost:4000/service/toolSave', data).then(res => {
-            const { data: { message } } = res;
+            const { data: { row, msg: message } } = res;
             alert(message);
+            insertTool(row);
         }).catch(err => console.error(err));
     };
 
@@ -37,7 +38,6 @@ class StoreTool extends React.Component {
         if (!files || files.length <= 0) {
             console.error('Error in Uploaded File');
         }
-        console.log(files[0]);
         const file = files[0];
         if (file.name.endsWith(`.${extension}`)) {
             this.setState({
@@ -85,7 +85,8 @@ const mapStateToProps = ({ preview }) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        previewChange: (preview) => dispatch(previewChange(preview))
+        previewChange: (preview) => dispatch(previewChange(preview)),
+        insertTool: (row) => dispatch(insertTool(row))
     }
 }
 

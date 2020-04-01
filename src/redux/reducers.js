@@ -1,7 +1,10 @@
 import {
     GET_TOOL_LIST, SHOW_CREATE_FORM,
-    PREVIEW_CHANGE, VERSION_CHANGE, DELETE_TOOL
+    PREVIEW_CHANGE, VERSION_CHANGE, DELETE_TOOL,
+    INSERT_TOOL
 } from "./action-types";
+
+import { insertRow } from "./utils";
 
 const INITIAL_STATE = {
     rows: [],
@@ -37,6 +40,14 @@ const toolReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 preview: action.payload
             };
+        case INSERT_TOOL:
+            const rows = insertRow(state, action.payload);
+            return {
+                ...state,
+                rows,
+                preview: rows[0].instructions[0],
+                createForm: !state.createForm
+            }
         default:
             return state;
     }

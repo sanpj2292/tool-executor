@@ -27,7 +27,7 @@ class Grid extends React.Component {
         const { instructions } = row;
         const { selectedVals, previewChange } = this.props;
         const vInd = selectedVals[ind];
-        const instruction = !instructions[vInd] || instructions[vInd] === '' ? '###### Instruction Information not provided' : instructions[vInd];
+        const instruction = instructions[vInd];
         previewChange(instruction);
     }
 
@@ -88,8 +88,9 @@ class Grid extends React.Component {
     }
 
     render() {
-        const { rows } = this.props;
-        const { renderHeader, renderGridSelect } = this;
+        const { renderHeader, renderGridSelect, props: { rows } } = this;
+        console.log('Rpws Grod');
+        console.log(rows);
         return (
             <table className="table table-hover table-dark">
                 <thead>
