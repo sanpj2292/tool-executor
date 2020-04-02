@@ -20,7 +20,7 @@
 }
 
 .card {
-  width: 90vw;
+  width: 97vw;
   margin: 16px;
   height: 85vh;
 }
@@ -30,5 +30,9 @@
 }
 
 .grid-container {
-  width: 44.5vw;
+  width: 48vw;
+}
+
+.h-80 {
+  height: 96.2%;
 }

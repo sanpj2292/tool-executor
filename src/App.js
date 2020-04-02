@@ -72,7 +72,7 @@ class App extends React.Component {
               <button className='btn btn-primary'
                 onClick={() => showCreateForm({
                   createForm: !createForm,
-                  preview: ''
+                  preview: rows.length > 0 && createForm ? rows[0].instructions[selectedVals[0]] : ''
                 })} >
                 {!createForm ? 'Create' : 'Back'}
               </button>
@@ -84,7 +84,8 @@ class App extends React.Component {
               }
             </div>
           </div>
-          <InstructionPreview containerClass='mr-auto px-2' />
+          <div className='px-3 mt-2 border-right h-80'></div>
+          <InstructionPreview containerClass='px-2 ml-3' />
         </Card>
       </div>
     );
