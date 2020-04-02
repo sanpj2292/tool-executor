@@ -74,8 +74,7 @@ class App extends React.Component {
                   createForm: !createForm,
                   preview: ''
                 })} >
-                {!createForm ? <i className="fas fa-plus" /> : null}
-                {!createForm ? ' Create' : 'Back'}
+                {!createForm ? 'Create' : 'Back'}
               </button>
             </div>
             <div className='table-responsive grid-container mr-auto my-2 ml-2'>

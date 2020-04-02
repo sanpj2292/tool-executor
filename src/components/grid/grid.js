@@ -1,10 +1,11 @@
 import React from 'react';
 import './grid.scss';
 import axios from 'axios';
-import { previewChange, versionChange, deleteTool } from "../../redux/actions";
+import { previewChange, deleteTool } from "../../redux/actions";
 import { connect } from "react-redux";
 import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
 import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
+import GridSelect from "./grid-select";
 
 class Grid extends React.Component {
 
@@ -31,30 +32,6 @@ class Grid extends React.Component {
         const vInd = selectedVals[ind];
         const instruction = instructions[vInd];
         previewChange(instruction);
-    }
-
-    onChangeSelect = (e, rowInd) => {
-        const selectVal = e.currentTarget.value;
-        let { selectedVals, rows, versionChange } = this.props;
-        selectedVals[rowInd] = Number(selectVal);
-        const preview = rows[rowInd].instructions[selectVal];
-        versionChange({ selectedVals, preview });
-    }
-
-    renderGridSelect = (row, rowInd) => {
-        return (
-            <select key={`select-row-${rowInd}`}
-                className="custom-select custom-select-sm"
-                value={this.props.selectedVals[rowInd]}
-                onClick={e => e.stopPropagation()}
-                onChange={e => this.onChangeSelect(e, rowInd)}>
-                {
-                    row.versions.map((opt, i) => (
-                        <option key={`${row.name}-opt-${i}`} value={i} >{opt}</option>
-                    ))
-                }
-            </select>
-        );
     }
 
     onDownload = async (e, rowInd) => {
@@ -114,7 +91,7 @@ class Grid extends React.Component {
     }
 
     render() {
-        const { renderHeader, renderGridSelect, props: { rows } } = this;
+        const { renderHeader, props: { rows } } = this;
         return (
             <table className="table table-hover table-dark">
                 <thead>
@@ -129,7 +106,9 @@ class Grid extends React.Component {
                                         {row.name}
                                     </u>
                                 </td>
-                                <td key={`row-grid-${ind}`}>{renderGridSelect(row, ind)}</td>
+                                <td key={`row-grid-${ind}`}>
+                                    <GridSelect rowData={{ row, rowInd: ind }} />
+                                </td>
                                 <td key={`row-grid-dwnlod-${ind}`}>
                                     <button className='btn btn-info btn-sm'
                                         onClick={e => this.onDownload(e, ind)} >
@@ -159,14 +138,13 @@ const mapStateToProps = (state) => {
     const gridState = { ...state }
     delete gridState.createForm;
     return gridState;
-}
+};
 
 const mapDispatchToProps = dispatch => {
     return {
         previewChange: (preview) => dispatch(previewChange(preview)),
-        versionChange: (preview) => dispatch(versionChange(preview)),
         deleteTool: ({ rows, preview, selectedVals }) => dispatch(deleteTool({ rows, preview, selectedVals }))
-    }
-}
+    };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Grid);
