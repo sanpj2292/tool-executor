@@ -35,7 +35,8 @@ class App extends React.Component {
   };
 
   async componentDidMount() {
-    if (!this.state.createForm) {
+    console.log('App\'s ComponentDidMount()')
+    if (!this.props.createForm) {
       try {
         const { getToolList } = this.props;
         const rows = await axios.get('http://localhost:4000/service/aggregate');
@@ -70,10 +71,14 @@ class App extends React.Component {
           <div className='d-flex flex-column card-container'>
             <div className={`${!createForm ? 'ml-auto' : 'mr-auto ml-2'} py-2`} >
               <button className='btn btn-primary'
-                onClick={() => showCreateForm({
-                  createForm: !createForm,
-                  preview: rows.length > 0 && createForm ? rows[0].instructions[selectedVals[0]] : ''
-                })} >
+                onClick={() => {
+                  console.log(selectedVals);
+                  console.log(rows[0].instructions[selectedVals[0]]);
+                  showCreateForm({
+                    createForm: !createForm,
+                    preview: rows.length > 0 && createForm ? rows[0].instructions[selectedVals[0]] : ''
+                  })
+                }} >
                 {!createForm ? 'Create' : 'Back'}
               </button>
             </div>

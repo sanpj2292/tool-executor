@@ -49,7 +49,7 @@ const toolReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 rows,
-                preview: rows[0].instructions[0],
+                preview: rows[0].instructions[selectedVals[0] ? selectedVals[0] : 0],
                 createForm: !state.createForm,
                 selectedVals
             }

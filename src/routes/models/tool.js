@@ -51,9 +51,10 @@ const setVersionName = (obj) => {
 const setVersion = (tool) => {
     if (tool.version && tool.version !== null && tool.version >= 1.0) {
         let val = parseFloat(tool.version);
-        const decimalVal = val - Math.floor(val + 0.1);
-        const inc = (decimalVal > 0.5) ? 1.0 : 0.1;
-        return (val + inc).toFixed(1);
+        const decimalVal = val - Math.floor(val);
+        const inc = (decimalVal > 0.4) ? 1.0 : 0.1;
+        const diff = (decimalVal > 0.4) ? decimalVal : 0;
+        return (val + inc - diff).toFixed(1);
     } else {
         return (1.0).toFixed(1);
     }
