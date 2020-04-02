@@ -115,8 +115,12 @@ router.delete('/delete/:id', async (req, res) => {
         }
         // Remove file from it's Path in Server
         const jarFolder = getFolderFromName(tool);
-        fs.unlinkSync(`${jarFolderPath}/${jarFolder}/${tool.versioned_name}`)
-        return res.status(200).send(tool);
+        fs.unlinkSync(`${jarFolderPath}/${jarFolder}/${tool.versioned_name}`);
+        const aggregatedTool = await Tool.aggregate([
+            { $group: groupConfig },
+            { $project: projectConfig }
+        ]);
+        return res.status(200).send({ deleted: tool, rows: aggregatedTool });
     } catch (error) {
         return res.status(500).send(error);
     }

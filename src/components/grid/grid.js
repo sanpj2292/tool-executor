@@ -3,6 +3,8 @@ import './grid.scss';
 import axios from 'axios';
 import { previewChange, versionChange, deleteTool } from "../../redux/actions";
 import { connect } from "react-redux";
+import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
+import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
 
 class Grid extends React.Component {
 
@@ -43,7 +45,7 @@ class Grid extends React.Component {
         return (
             <select key={`select-row-${rowInd}`}
                 className="custom-select custom-select-sm"
-                defaultValue={this.props.selectedVals[rowInd]}
+                value={this.props.selectedVals[rowInd]}
                 onClick={e => e.stopPropagation()}
                 onChange={e => this.onChangeSelect(e, rowInd)}>
                 {
@@ -60,7 +62,6 @@ class Grid extends React.Component {
             const { selectedVals, rows } = this.props;
             const versionSelVal = selectedVals[rowInd];
             const id = rows[rowInd].ids[versionSelVal];
-            console.log(rows);
             window.location = `http://localhost:4000/service/download/${id}`;
         } catch (error) {
             console.error(error);
@@ -69,31 +70,41 @@ class Grid extends React.Component {
 
     onDelete = async (e, rowInd) => {
         try {
-            const { selectedVals, rows, deleteTool } = this.props;
-            const row = rows[rowInd];
-            console.log(selectedVals);
-            const versionSelVal = selectedVals[rowInd];
-            console.log(row.ids);
+            const oldProps = { ...this.props };
+            const { selectedVals: oldSelectedVals, rows: oldRows, deleteTool } = oldProps;
+            const row = oldRows[rowInd];
+            const versionSelVal = oldSelectedVals[rowInd];
             const id = row.ids[versionSelVal];
             const res = await axios.delete(`http://localhost:4000/service/delete/${id}`);
-            alert(`${res.data.versioned_name} has been deleted Successfully`);
+            const { rows, deleted } = res.data;
+            alert(`${deleted.versioned_name} has been deleted Successfully`);
             let preview = '';
+            let selectedVals = [...oldSelectedVals];
             if (rows.length >= 1) {
-                if (rows[rowInd].ids.length > 1) {
-                    // Removing elements in respective arrays
-                    rows[rowInd].ids.splice(versionSelVal, 1);
-                    rows[rowInd].versionedNames.splice(versionSelVal, 1);
-                    rows[rowInd].versions.splice(versionSelVal, 1);
-                    rows[rowInd].instructions.splice(versionSelVal, 1);
-                    // Setting the preview value
-                    preview = rows[rowInd].instructions[versionSelVal];
-                    if (versionSelVal - 1 > 0) {
-                        selectedVals[rowInd] -= 1;
-                    } else {
+                // Versions condition check
+                if (rows[rowInd]) {
+                    // Setting the preview value and selectedVals
+                    if (versionSelVal - 1 < 0) {
                         selectedVals[rowInd] = 0;
+                        preview = rows[rowInd].instructions[0];
+                    } else {
+                        const selVal = versionSelVal - 1;
+                        selectedVals[rowInd] = selVal;
+                        preview = rows[rowInd].instructions[selVal];
                     }
                 } else {
-                    rows.splice(rowInd, 1);
+                    // Only a single version remaining condition
+                    // Remove related Row's Selected Vals(as Row itself is removed)
+                    selectedVals.splice(rowInd, 1);
+                    if (rows.length >= 1) {
+                        // Only one row remaining coniditon
+                        if (rowInd - 1 > 0) {
+                            const selVal = selectedVals[rowInd - 1];
+                            preview = rows[rowInd - 1].instructions[selVal];
+                        } else {
+                            preview = rows[0].instructions[selectedVals[0]];
+                        }
+                    }
                 }
             }
             deleteTool({ rows, preview, selectedVals });
@@ -120,17 +131,19 @@ class Grid extends React.Component {
                                 </td>
                                 <td key={`row-grid-${ind}`}>{renderGridSelect(row, ind)}</td>
                                 <td key={`row-grid-dwnlod-${ind}`}>
-                                    <i className="fas fa-download"
-                                        onClick={e => this.onDownload(e, ind)}>
-                                    </i>
+                                    <button className='btn btn-info btn-sm'
+                                        onClick={e => this.onDownload(e, ind)} >
+                                        <DownloadIcon style={{ paddingTop: '2px' }} />
+                                    </button>
                                 </td>
                                 <td key={`row-del-${ind}`}>
-                                    <i className="far fa-trash-alt"
+                                    <button className='btn btn-danger btn-sm'
                                         onClick={e => {
                                             e.stopPropagation();
                                             this.onDelete(e, ind);
-                                        }}
-                                    ></i>
+                                        }}>
+                                        <DeleteIcon style={{ paddingTop: '2px' }} />
+                                    </button>
                                 </td>
                             </tr>
                         ))) : null
