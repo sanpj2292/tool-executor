@@ -44,5 +44,5 @@
     "ngrok": "^3.2.7",
     "nodemon": "^2.0.2"
   },
-  "proxy": "http://localhost:4000/service"
+  "proxy": "http://localhost:4000"
 }

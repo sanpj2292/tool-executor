@@ -21,7 +21,7 @@ class StoreTool extends React.Component {
         const data = new FormData();
         data.append('jarFile', jarFile);
         data.append('instruction', preview);
-        axios.post('/toolSave', data).then(res => {
+        axios.post('/service/toolSave', data).then(res => {
             const { data: { row, msg: message } } = res;
             alert(message);
             insertTool(row);

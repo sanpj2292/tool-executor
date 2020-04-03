@@ -34,12 +34,42 @@ class Grid extends React.Component {
         previewChange(instruction);
     }
 
+    getFileNameFromContentDisposition = (contentDisposition) => {
+        if (!contentDisposition) return null;
+
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+
+        return match ? match[1] : null;
+    }
+
     onDownload = async (e, rowInd) => {
         try {
             const { selectedVals, rows } = this.props;
             const versionSelVal = selectedVals[rowInd];
             const id = rows[rowInd].ids[versionSelVal];
-            window.location = `/download/${id}`;
+            const res = await axios.get(`/service/download/${id}`);
+
+            const data = res.data; // or res.blob() if using blob responses
+
+            const url = window.URL.createObjectURL(
+                new Blob([data], {
+                    type: res.headers["content-type"]
+                })
+            );
+
+            const actualFileName = this.getFileNameFromContentDisposition(
+                res.headers["content-disposition"]
+            );
+
+            // uses the download attribute on a temporary anchor to trigger the browser
+            // download behavior. if you need wider compatibility, you can replace this
+            // part with a library such as filesaver.js
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", actualFileName);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
         } catch (error) {
             console.error(error);
         }
@@ -52,7 +82,7 @@ class Grid extends React.Component {
             const row = oldRows[rowInd];
             const versionSelVal = oldSelectedVals[rowInd];
             const id = row.ids[versionSelVal];
-            const res = await axios.delete(`/delete/${id}`);
+            const res = await axios.delete(`/service/delete/${id}`);
             const { rows, deleted } = res.data;
             alert(`${deleted.versioned_name} has been deleted Successfully`);
             let preview = '';

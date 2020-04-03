@@ -3,7 +3,6 @@ import './App.css';
 import Header from './components/header/header';
 import StoreTool from './components/tool/store-tool';
 import axios from "axios";
-import socketIOClient from "socket.io-client";
 import Grid from './components/grid/grid';
 import Card from 'react-bootstrap/Card';
 import InstructionPreview from "./components/instruction/instruction-preview";
@@ -29,16 +28,11 @@ class App extends React.Component {
     this.setState({ folder: folderVal });
   }
 
-  handleExecute = (e) => {
-    const socket = socketIOClient('http://localhost:4000/sendHello');
-    socket.on('hello', data => alert(data));
-  };
-
   async componentDidMount() {
     if (!this.props.createForm) {
       try {
         const { getToolList } = this.props;
-        const rows = await axios.get('/aggregate');
+        const rows = await axios.get('/service/aggregate');
         if (rows.data.length > 0) {
           const selectedVals = rows.data.map(val => 0);
           // Using redux we have put this into state
