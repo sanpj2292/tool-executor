@@ -35,11 +35,10 @@ class App extends React.Component {
   };
 
   async componentDidMount() {
-    console.log('App\'s ComponentDidMount()')
     if (!this.props.createForm) {
       try {
         const { getToolList } = this.props;
-        const rows = await axios.get('http://localhost:4000/service/aggregate');
+        const rows = await axios.get('/aggregate');
         if (rows.data.length > 0) {
           const selectedVals = rows.data.map(val => 0);
           // Using redux we have put this into state
@@ -72,8 +71,6 @@ class App extends React.Component {
             <div className={`${!createForm ? 'ml-auto' : 'mr-auto ml-2'} py-2`} >
               <button className='btn btn-primary'
                 onClick={() => {
-                  console.log(selectedVals);
-                  console.log(rows[0].instructions[selectedVals[0]]);
                   showCreateForm({
                     createForm: !createForm,
                     preview: rows.length > 0 && createForm ? rows[0].instructions[selectedVals[0]] : ''

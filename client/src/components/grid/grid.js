@@ -39,7 +39,7 @@ class Grid extends React.Component {
             const { selectedVals, rows } = this.props;
             const versionSelVal = selectedVals[rowInd];
             const id = rows[rowInd].ids[versionSelVal];
-            window.location = `http://localhost:4000/service/download/${id}`;
+            window.location = `/download/${id}`;
         } catch (error) {
             console.error(error);
         }
@@ -52,7 +52,7 @@ class Grid extends React.Component {
             const row = oldRows[rowInd];
             const versionSelVal = oldSelectedVals[rowInd];
             const id = row.ids[versionSelVal];
-            const res = await axios.delete(`http://localhost:4000/service/delete/${id}`);
+            const res = await axios.delete(`/delete/${id}`);
             const { rows, deleted } = res.data;
             alert(`${deleted.versioned_name} has been deleted Successfully`);
             let preview = '';

@@ -3,10 +3,10 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const expressIp = require('express-ip');
 const expIpMiddleware = expressIp().getIpInfoMiddleware;
-require('./routes/db/mongoose');
+require('./db/mongoose');
 
 
-const controller = require('./routes/controller/controller');
+const controller = require('./controller/controller');
 
 const port = process.env.PORT || 4000;
 
@@ -33,7 +33,7 @@ const appServer = app.listen(port, () => {
     console.log(`We are live at ${port}`);
 });
 
-const socketIoListener = require('./routes/service/socket');
+const socketIoListener = require('./service/socket');
 socketIoListener(appServer); // This function return io object of socketIo
 
 module.exports = app;

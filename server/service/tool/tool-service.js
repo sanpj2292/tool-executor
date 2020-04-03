@@ -1,7 +1,7 @@
 const fs = require('fs');
 const router = new require('express').Router();
 const path = require('path');
-const jarFolderPath = path.join(__dirname, '../../../uploads/jars');
+const jarFolderPath = path.join(__dirname, '../../../uploads');
 const Tool = require('../../models/tool');
 const { groupConfig, projectConfig, getFolderFromName } = require('./utils');
 
@@ -91,8 +91,9 @@ router.post('/toolSave', async (req, res) => {
         // Check for existence of directory, if not create it!
         const directory = `${jarFolderPath}/${jarFolder}`;
         if (!fs.existsSync(directory)) {
-            fs.mkdirSync(directory);
+            fs.mkdirSync(directory, { recursive: true });
         }
+        console.log('Before moving to directory')
         await jarFile.mv(`${directory}/${savedTool.versioned_name}`);
         // Aggregation needed to assit in render process on client-side
         const aggregatedTool = await Tool.aggregate([
@@ -102,6 +103,7 @@ router.post('/toolSave', async (req, res) => {
         ]);
         return res.status(201).send({ row: aggregatedTool[0], msg: 'Successfully created!' });
     } catch (error) {
+        console.log(error);
         return res.status(500).send(error);
     }
 });

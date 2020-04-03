@@ -7,12 +7,6 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
-    "body-parser": "^1.19.0",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "express-fileupload": "^1.1.6",
-    "express-ip": "^1.0.4",
-    "mongoose": "^5.9.6",
     "node-sass": "^4.13.1",
     "react": "^16.13.0",
     "react-bootstrap": "^1.0.0",
@@ -22,15 +16,13 @@
     "react-scripts": "3.4.0",
     "react-syntax-highlighter": "^12.2.1",
     "redux": "^4.0.5",
-    "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "server": "nodemon src/express-app.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,7 +40,9 @@
     ]
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "ngrok": "^3.2.7",
     "nodemon": "^2.0.2"
-  }
+  },
+  "proxy": "http://localhost:4000/service"
 }
