@@ -4,6 +4,7 @@ const fileUpload = require('express-fileupload');
 const expressIp = require('express-ip');
 const expIpMiddleware = expressIp().getIpInfoMiddleware;
 require('./db/mongoose');
+const path = require('path');
 
 
 const controller = require('./controller/controller');
@@ -24,6 +25,9 @@ app.use(expIpMiddleware);
 // for parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 app.use('/', controller);
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'bin/build')));
 
 // const server = http.createServer(app).listen(5000, () => {
 //     console.log(`Socket is Live At 5000`);

@@ -32,7 +32,7 @@ class App extends React.Component {
     if (!this.props.createForm) {
       try {
         const { getToolList } = this.props;
-        const rows = await axios.get('/service/aggregate');
+        const rows = await axios.get('/api/service/aggregate');
         if (rows.data.length > 0) {
           const selectedVals = rows.data.map(val => 0);
           // Using redux we have put this into state

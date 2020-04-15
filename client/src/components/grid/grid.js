@@ -5,6 +5,7 @@ import { previewChange, deleteTool } from "../../redux/actions";
 import { connect } from "react-redux";
 import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
 import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
+import { ReactComponent as UpdateIcon } from "../../icons/update.svg";
 import GridSelect from "./grid-select";
 
 class Grid extends React.Component {
@@ -47,7 +48,7 @@ class Grid extends React.Component {
             const { selectedVals, rows } = this.props;
             const versionSelVal = selectedVals[rowInd];
             const id = rows[rowInd].ids[versionSelVal];
-            const res = await axios.get(`/service/download/${id}`);
+            const res = await axios.get(`/api/service/download/${id}`);
 
             const data = res.data; // or res.blob() if using blob responses
 
@@ -82,7 +83,7 @@ class Grid extends React.Component {
             const row = oldRows[rowInd];
             const versionSelVal = oldSelectedVals[rowInd];
             const id = row.ids[versionSelVal];
-            const res = await axios.delete(`/service/delete/${id}`);
+            const res = await axios.delete(`/api/service/delete/${id}`);
             const { rows, deleted } = res.data;
             alert(`${deleted.versioned_name} has been deleted Successfully`);
             let preview = '';
@@ -120,6 +121,19 @@ class Grid extends React.Component {
         }
     }
 
+    onUpdateClick = async (e, rowInd) => {
+        try {
+            const oldProps = { ...this.props };
+            const { selectedVals: oldSelectedVals, rows: oldRows } = oldProps;
+            const row = oldRows[rowInd];
+            const versionSelVal = oldSelectedVals[rowInd];
+            const id = row.ids[versionSelVal];
+            alert(`${id} of selected row for update`);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     render() {
         const { renderHeader, props: { rows } } = this;
         return (
@@ -152,6 +166,12 @@ class Grid extends React.Component {
                                             this.onDelete(e, ind);
                                         }}>
                                         <DeleteIcon style={{ paddingTop: '2px' }} />
+                                    </button>
+                                </td>
+                                <td key={`row-upd-${ind}`}>
+                                    <button className='btn btn-secondary btn-sm'
+                                        onClick={e => this.onUpdateClick(e, ind)}>
+                                        <UpdateIcon style={{ paddingTop: '2px' }} />
                                     </button>
                                 </td>
                             </tr>

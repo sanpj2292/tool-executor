@@ -41,7 +41,7 @@ router.get('/download/:id', async (req, res) => {
         const { mimetype, versioned_name } = fileMetaData;
         // get Folder from meta-data
         const folder = getFolderFromName(fileMetaData);
-        res.set('Content-disposition', 'attachment; filename=' + versioned_name);
+        res.set('Content-disposition', `attachment; filename=${versioned_name}`);
         res.set('Content-Type', mimetype);
         // Download from File-system
         let fstream = fs.createReadStream(`${jarFolderPath}/${folder}/${versioned_name}`);
@@ -127,5 +127,40 @@ router.delete('/delete/:id', async (req, res) => {
         return res.status(500).send(error);
     }
 });
+
+router.patch('/update/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+    } catch (error) {
+        return res.status(500).send(error.stack);
+    }
+
+});
+
+router.get('/tool/:id', async (req, res) => {
+    try {
+        const { id } = params;
+        const tool = await Tool.findById(id, {
+            _id: 0,
+            mimetype: 0,
+            name: 1,
+            size: 0,
+            encoding: 0,
+            tempFilePath: 0,
+            truncated: 0,
+            md5: 0,
+            instruction: 1,
+            createdAt: 0,
+            updatedAt: 0,
+            versioned_name: 1,
+        });
+        if (!tool) {
+            return res.status(404).send('Mentioned Tool is not found');
+        }
+        return res.status(200).send(tool);
+    } catch (error) {
+        return res.status(500).send(error.stack);
+    }
+})
 
 module.exports = router;
