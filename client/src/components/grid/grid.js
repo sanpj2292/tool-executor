@@ -133,7 +133,7 @@ class Grid extends React.Component {
         try {
             const oldProps = { ...this.props };
             const { selectedVals: oldSelectedVals, rows: oldRows,
-                showAlert, showUpdateForm } = oldProps;
+                showUpdateForm } = oldProps;
             const row = oldRows[rowInd];
             const versionSelVal = oldSelectedVals[rowInd];
             const id = row.ids[versionSelVal];
@@ -142,7 +142,7 @@ class Grid extends React.Component {
             const toolObject = {
                 id,
                 preview: instruction,
-                updInpVName: versioned_name
+                updInpVName: versioned_name,
             };
             return showUpdateForm(toolObject);
         } catch (error) {

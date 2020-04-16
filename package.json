@@ -1,0 +1,30 @@
+{
+  "name": "tool-executor",
+  "version": "1.0.0",
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "dependencies": {
+    "concurrently": "^5.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client-install": "cd client && npm install",
+    "server-install": "cd server && npm install",
+    "install-all-deps": "concurrently --kill-others-on-fail \"npm run server-install\" \"npm run client-install\"",
+    "client-dev": "cd client && npm start",
+    "server-dev": "cd server && npm run dev-server",
+    "dev": "concurrently --kill-others-on-fail \"npm run client-dev\" \"npm run server-dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanpj2292/tool-executor.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sanpj2292/tool-executor/issues"
+  },
+  "homepage": "https://github.com/sanpj2292/tool-executor#readme"
+}

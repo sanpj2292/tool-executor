@@ -1,7 +1,7 @@
 import {
     GET_TOOL_LIST, SHOW_CREATE_FORM,
     PREVIEW_CHANGE, VERSION_CHANGE, DELETE_TOOL,
-    INSERT_TOOL, SHOW_UPDATE_FORM, SHOW_ALERT, DISMISS_ALERT
+    INSERT_TOOL, SHOW_UPDATE_FORM, SHOW_ALERT, DISMISS_ALERT, HIDE_UPDATE_FORM
 } from "./action-types";
 
 export const getToolList = ({ rows, preview, selectedVals }) => ({
@@ -56,6 +56,17 @@ export const showUpdateForm = ({ id, preview, updInpVName }) => ({
         update: {
             id, updInpVName,
             isVisible: true
+        }
+    }
+});
+
+export const hideUpdateForm = () => ({
+    type: HIDE_UPDATE_FORM,
+    payload: {
+        update: {
+            id: '',
+            isVisible: false,
+            updInpVName: ''
         }
     }
 });

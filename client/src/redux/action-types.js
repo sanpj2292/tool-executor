@@ -6,6 +6,7 @@ export const DELETE_TOOL = 'DELETE_TOOL';
 export const INSERT_TOOL = 'INSERT_TOOL';
 
 export const SHOW_UPDATE_FORM = 'SHOW_UPDATE_FORM';
+export const HIDE_UPDATE_FORM = 'HIDE_UPDATE_FORM';
 
 export const SHOW_ALERT = 'SHOW_ALERT';
 export const DISMISS_ALERT = 'DISMISS_ALERT';

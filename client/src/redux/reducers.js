@@ -1,7 +1,7 @@
 import {
     GET_TOOL_LIST, SHOW_CREATE_FORM,
     PREVIEW_CHANGE, VERSION_CHANGE, DELETE_TOOL,
-    INSERT_TOOL, SHOW_UPDATE_FORM, SHOW_ALERT, DISMISS_ALERT
+    INSERT_TOOL, SHOW_UPDATE_FORM, SHOW_ALERT, DISMISS_ALERT, HIDE_UPDATE_FORM
 } from "./action-types";
 
 import { insertRow } from "./utils";
@@ -14,7 +14,7 @@ const INITIAL_STATE = {
     update: {
         isVisible: false,
         updInpVName: '',
-        id: ''
+        id: '',
     },
     alert: {
         variant: 'info',
@@ -64,6 +64,12 @@ const toolReducer = (state = INITIAL_STATE, action) => {
                 createForm: !state.createForm,
                 selectedVals
             };
+        case HIDE_UPDATE_FORM:
+            return {
+                ...state,
+                preview: state.rows[0].instructions[0],
+                ...action.payload
+            }
         case DISMISS_ALERT:
         case SHOW_ALERT:
             return {
