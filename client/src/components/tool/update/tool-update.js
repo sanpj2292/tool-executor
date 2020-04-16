@@ -3,24 +3,26 @@ import { connect } from "react-redux";
 import InstructionInput from "../../instruction/instruction";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
+import { showAlert } from "../../../redux/actions";
 
 class UpdateTool extends React.Component {
 
     onSubmitHandler = async e => {
         try {
             e.preventDefault();
-            alert('Update submit form clicked');
-            const { preview, update: { id }, history } = this.props;
+            const { showAlert, preview, update: { id, updInpVName }, history } = this.props;
             const formData = new FormData();
             formData.append('instruction', preview);
             const axRes = await axios.patch(`/api/service/update/${id}`,
                 formData);
-            console.log(axRes);
             const message = axRes.data;
-            alert(`Message from Server: ${message}`);
-            history.push('/')
+            history.push('/');
+            return showAlert({
+                variant: 'success',
+                message: `${message} for ${updInpVName} !`
+            });
         } catch (error) {
-            console.error(error.stack);
+            return showAlert({ variant: 'danger', message: error.message });
         }
     }
 
@@ -52,6 +54,7 @@ const mapStateToProps = ({ preview, update }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    showAlert: ({ variant, message }) => dispatch(showAlert({ variant, message }))
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UpdateTool));

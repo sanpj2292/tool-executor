@@ -1,0 +1,9 @@
+.transit {
+  position: fixed;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  z-index: 1060;
+  opacity: 0.85 !important;
+  margin-top: 0.25rem;
+  transition: all 1s ease-in-out;
+}

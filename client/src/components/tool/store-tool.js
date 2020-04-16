@@ -5,6 +5,7 @@ import './store-tool.scss';
 import InstructionInput from '../instruction/instruction';
 import { connect } from "react-redux";
 import { insertTool } from "../../redux/actions";
+import { showAlert } from "../../redux/actions";
 
 class StoreTool extends React.Component {
     constructor(props) {
@@ -17,25 +18,26 @@ class StoreTool extends React.Component {
     onSubmitHandler = e => {
         e.preventDefault();
         const { jarFile } = this.state;
-        const { preview, insertTool } = this.props;
+        const { preview, insertTool, showAlert } = this.props;
         const data = new FormData();
         data.append('jarFile', jarFile);
         data.append('instruction', preview);
         axios.post('/api/service/toolSave', data).then(res => {
             const { data: { row, msg: message } } = res;
-            alert(message);
             insertTool(row);
-        }).catch(err => console.error(err));
+            showAlert({ variant: 'success', message });
+        }).catch(err => showAlert({ variant: 'danger', message: err.message }));
     };
 
     onChangeHandler = e => {
+        const { showAlert } = this.props;
         const extension = e.target.getAttribute('extension');
         const { files } = e.target;
         if (!extension || extension === null) {
-            throw new Error('No Extension has been specified');
+            return showAlert({ variant: 'danger', message: 'No Extension has been specified' });
         }
         if (!files || files.length <= 0) {
-            console.error('Error in Uploaded File');
+            return showAlert({ variant: 'danger', message: 'Error in uploaded file' })
         }
         const file = files[0];
         if (file.name.endsWith(`.${extension}`)) {
@@ -43,7 +45,8 @@ class StoreTool extends React.Component {
                 jarFile: file
             });
         } else {
-            alert(`UploadError: Please upload a file with .${extension} only`);
+            let message = `UploadError: Please upload a file with .${extension} only`;
+            return showAlert({ variant: 'danger', message });
         }
     };
 
@@ -79,8 +82,9 @@ const mapStateToProps = ({ preview }) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        insertTool: (row) => dispatch(insertTool(row))
-    }
+        insertTool: (row) => dispatch(insertTool(row)),
+        showAlert: ({ variant, message }) => dispatch(showAlert({ variant, message }))
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StoreTool);

@@ -93,7 +93,6 @@ router.post('/toolSave', async (req, res) => {
         if (!fs.existsSync(directory)) {
             fs.mkdirSync(directory, { recursive: true });
         }
-        console.log('Before moving to directory')
         await jarFile.mv(`${directory}/${savedTool.versioned_name}`);
         // Aggregation needed to assit in render process on client-side
         const aggregatedTool = await Tool.aggregate([
@@ -103,7 +102,6 @@ router.post('/toolSave', async (req, res) => {
         ]);
         return res.status(201).send({ row: aggregatedTool[0], msg: 'Successfully created!' });
     } catch (error) {
-        console.log(error);
         return res.status(500).send(error);
     }
 });
@@ -131,11 +129,11 @@ router.delete('/delete/:id', async (req, res) => {
 router.patch('/update/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { instruction } = req.body;
+        const { instruction, versioned_name } = req.body;
         await Tool.findOneAndUpdate({ _id: id }, { instruction }, { useFindAndModify: false });
         return res.status(200).send('Updation Successful');
     } catch (error) {
-        return res.status(500).send(error.stack);
+        return res.status(500).send(error);
     }
 
 });
@@ -154,7 +152,7 @@ router.get('/tool/:id', async (req, res) => {
         }
         return res.status(200).send(tool);
     } catch (error) {
-        return res.status(500).send(error.stack);
+        return res.status(500).send(error);
     }
 })
 

@@ -8,6 +8,7 @@ import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
 import { ReactComponent as UpdateIcon } from "../../icons/update.svg";
 import GridSelect from "./grid-select";
 import UpdateTool from "../tool/update/tool-update";
+import { showAlert } from "../../redux/actions";
 
 class Grid extends React.Component {
 
@@ -45,6 +46,7 @@ class Grid extends React.Component {
     }
 
     onDownload = async (e, rowInd) => {
+        const { showAlert } = this.props;
         try {
             const { selectedVals, rows } = this.props;
             const versionSelVal = selectedVals[rowInd];
@@ -73,11 +75,15 @@ class Grid extends React.Component {
             link.click();
             link.parentNode.removeChild(link);
         } catch (error) {
-            console.error(error);
+            return showAlert({
+                variant: 'danger',
+                message: 'Download Unsuccessful, kindly try again'
+            });
         }
     }
 
     onDelete = async (e, rowInd) => {
+        const { showAlert } = this.props;
         try {
             const oldProps = { ...this.props };
             const { selectedVals: oldSelectedVals, rows: oldRows, deleteTool } = oldProps;
@@ -86,7 +92,8 @@ class Grid extends React.Component {
             const id = row.ids[versionSelVal];
             const res = await axios.delete(`/api/service/delete/${id}`);
             const { rows, deleted } = res.data;
-            alert(`${deleted.versioned_name} has been deleted Successfully`);
+            let message = `${deleted.versioned_name} has been deleted Successfully`;
+            showAlert({ variant: 'success', message });
             let preview = '';
             let selectedVals = [...oldSelectedVals];
             if (rows.length >= 1) {
@@ -118,28 +125,31 @@ class Grid extends React.Component {
             }
             deleteTool({ rows, preview, selectedVals });
         } catch (error) {
-            console.error(error);
+            return showAlert({ variant: 'danger', message: error.message });
         }
     }
 
     onUpdateClick = async (e, rowInd) => {
         try {
             const oldProps = { ...this.props };
-            const { selectedVals: oldSelectedVals, rows: oldRows, showUpdateForm } = oldProps;
+            const { selectedVals: oldSelectedVals, rows: oldRows,
+                showAlert, showUpdateForm } = oldProps;
             const row = oldRows[rowInd];
             const versionSelVal = oldSelectedVals[rowInd];
             const id = row.ids[versionSelVal];
-            alert(`${id} of selected row for update`);
             const axRes = await axios.get(`/api/service/tool/${id}`);
             const { instruction, versioned_name } = axRes.data;
             const toolObject = {
                 id,
                 preview: instruction,
                 updInpVName: versioned_name
-            }
-            showUpdateForm(toolObject);
+            };
+            return showUpdateForm(toolObject);
         } catch (error) {
-            console.error(error);
+            return showAlert({
+                variant: 'danger',
+                message: `Updation unsuccessful, kindly try again`
+            });
         }
     }
 
@@ -208,7 +218,8 @@ const mapDispatchToProps = dispatch => {
     return {
         previewChange: (preview) => dispatch(previewChange(preview)),
         deleteTool: ({ rows, preview, selectedVals }) => dispatch(deleteTool({ rows, preview, selectedVals })),
-        showUpdateForm: (id) => dispatch(showUpdateForm(id))
+        showUpdateForm: (id) => dispatch(showUpdateForm(id)),
+        showAlert: ({ variant, message }) => dispatch(showAlert({ variant, message }))
     };
 };
 

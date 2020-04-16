@@ -1,7 +1,7 @@
 import {
     GET_TOOL_LIST, SHOW_CREATE_FORM,
     PREVIEW_CHANGE, VERSION_CHANGE, DELETE_TOOL,
-    INSERT_TOOL, SHOW_UPDATE_FORM
+    INSERT_TOOL, SHOW_UPDATE_FORM, SHOW_ALERT, DISMISS_ALERT
 } from "./action-types";
 
 export const getToolList = ({ rows, preview, selectedVals }) => ({
@@ -58,4 +58,22 @@ export const showUpdateForm = ({ id, preview, updInpVName }) => ({
             isVisible: true
         }
     }
-})
+});
+
+export const showAlert = ({ variant, message }) => ({
+    type: SHOW_ALERT,
+    payload: {
+        variant,
+        show: true,
+        message
+    }
+});
+
+export const dismissAlert = () => ({
+    type: DISMISS_ALERT,
+    payload: {
+        variant: 'info',
+        show: false,
+        message: ''
+    }
+});

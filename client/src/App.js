@@ -8,7 +8,8 @@ import Card from 'react-bootstrap/Card';
 import InstructionPreview from "./components/instruction/instruction-preview";
 import { connect } from "react-redux";
 import { getToolList, showCreateForm } from "./redux/actions";
-
+import TimeoutAlert from "./components/alert/timeout-alert";
+import { showAlert } from "./redux/actions";
 
 class App extends React.Component {
   constructor(props) {
@@ -29,11 +30,13 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
+    const { showAlert } = this.props;
     if (!this.props.createForm) {
       try {
         const { getToolList } = this.props;
         const rows = await axios.get('/api/service/aggregate');
         if (rows.data.length > 0) {
+          showAlert({ variant: 'success', message: 'Data successfully fetched' });
           const selectedVals = rows.data.map(val => 0);
           // Using redux we have put this into state
           getToolList({
@@ -41,7 +44,9 @@ class App extends React.Component {
             preview: rows.data[0].instructions[0],
             selectedVals
           });
+
         } else {
+          showAlert({ variant: 'info', message: 'Data is empty in DB' });
           getToolList({
             createForm: false,
             preview: '',
@@ -50,16 +55,20 @@ class App extends React.Component {
           });
         }
       } catch (error) {
-        console.error(error);
+        return showAlert({
+          variant: 'danger',
+          message: error.message ? error.message : 'Could not load the data'
+        });
       }
     }
   }
 
   render() {
-    const { showCreateForm, createForm, rows, selectedVals, preview } = this.props;
+    const { showCreateForm, createForm, rows, selectedVals, preview, alert } = this.props;
     return (
       <div className="App">
         <Header />
+        {alert.message && alert.message.length > 0 ? <TimeoutAlert {...alert} /> : null}
         <Card className='d-flex flex-row card'>
           <div className='d-flex flex-column card-container'>
             <div className={`${!createForm ? 'ml-auto' : 'mr-auto ml-2'} py-2`} >
@@ -98,7 +107,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getToolList: (stateData) => dispatch(getToolList(stateData)),
-    showCreateForm: (state) => dispatch(showCreateForm(state))
+    showCreateForm: (state) => dispatch(showCreateForm(state)),
+    showAlert: ({ variant, message }) => dispatch(showAlert({ variant, message }))
   };
 };
 
