@@ -4,3 +4,5 @@ export const PREVIEW_CHANGE = 'PREVIEW_CHANGE';
 export const VERSION_CHANGE = 'VERSION_CHANGE';
 export const DELETE_TOOL = 'DELETE_TOOL';
 export const INSERT_TOOL = 'INSERT_TOOL';
+
+export const SHOW_UPDATE_FORM = 'SHOW_UPDATE_FORM';

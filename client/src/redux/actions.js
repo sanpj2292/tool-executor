@@ -1,7 +1,7 @@
 import {
     GET_TOOL_LIST, SHOW_CREATE_FORM,
     PREVIEW_CHANGE, VERSION_CHANGE, DELETE_TOOL,
-    INSERT_TOOL
+    INSERT_TOOL, SHOW_UPDATE_FORM
 } from "./action-types";
 
 export const getToolList = ({ rows, preview, selectedVals }) => ({
@@ -17,7 +17,8 @@ export const showCreateForm = ({ createForm, preview }) => ({
     type: SHOW_CREATE_FORM,
     payload: {
         createForm,
-        preview
+        preview,
+        updateForm: false
     }
 });
 
@@ -47,3 +48,14 @@ export const insertTool = (row) => ({
     type: INSERT_TOOL,
     payload: row
 });
+
+export const showUpdateForm = ({ id, preview, updInpVName }) => ({
+    type: SHOW_UPDATE_FORM,
+    payload: {
+        preview,
+        update: {
+            id, updInpVName,
+            isVisible: true
+        }
+    }
+})

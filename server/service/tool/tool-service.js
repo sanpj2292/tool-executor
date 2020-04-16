@@ -131,6 +131,9 @@ router.delete('/delete/:id', async (req, res) => {
 router.patch('/update/:id', async (req, res) => {
     try {
         const { id } = req.params;
+        const { instruction } = req.body;
+        await Tool.findOneAndUpdate({ _id: id }, { instruction }, { useFindAndModify: false });
+        return res.status(200).send('Updation Successful');
     } catch (error) {
         return res.status(500).send(error.stack);
     }
@@ -139,19 +142,11 @@ router.patch('/update/:id', async (req, res) => {
 
 router.get('/tool/:id', async (req, res) => {
     try {
-        const { id } = params;
+        const { params: { id } } = req;
         const tool = await Tool.findById(id, {
             _id: 0,
-            mimetype: 0,
             name: 1,
-            size: 0,
-            encoding: 0,
-            tempFilePath: 0,
-            truncated: 0,
-            md5: 0,
             instruction: 1,
-            createdAt: 0,
-            updatedAt: 0,
             versioned_name: 1,
         });
         if (!tool) {

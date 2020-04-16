@@ -1,7 +1,7 @@
 import {
     GET_TOOL_LIST, SHOW_CREATE_FORM,
     PREVIEW_CHANGE, VERSION_CHANGE, DELETE_TOOL,
-    INSERT_TOOL
+    INSERT_TOOL, SHOW_UPDATE_FORM
 } from "./action-types";
 
 import { insertRow } from "./utils";
@@ -10,11 +10,17 @@ const INITIAL_STATE = {
     rows: [],
     preview: '',
     selectedVals: [],
-    createForm: false
+    createForm: false,
+    update: {
+        isVisible: false,
+        updInpVName: '',
+        id: ''
+    }
 };
 
 const toolReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        case SHOW_UPDATE_FORM:
         case GET_TOOL_LIST:
             return {
                 ...state,

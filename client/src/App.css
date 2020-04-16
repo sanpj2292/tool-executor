@@ -23,6 +23,7 @@
   width: 97vw;
   margin: 16px;
   height: 85vh;
+  box-shadow: 0.25rem 0.25rem 0.5rem 0.25rem #c2c2c2;
 }
 
 .card-container {

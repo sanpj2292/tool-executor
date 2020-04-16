@@ -75,8 +75,9 @@ class App extends React.Component {
             </div>
             <div className='table-responsive grid-container mr-auto my-2 ml-2'>
               {
-                createForm ? <StoreTool preview={preview} /> : <Grid rows={rows} columns={['name', 'versions', 'download', 'delete']}
-                  selectedVals={selectedVals} />
+                createForm ? <StoreTool preview={preview} /> :
+                  <Grid rows={rows} selectedVals={selectedVals}
+                    columns={['name', 'versions', 'download', 'delete', 'update']} />
               }
             </div>
           </div>

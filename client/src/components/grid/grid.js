@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import './grid.scss';
 import axios from 'axios';
-import { previewChange, deleteTool } from "../../redux/actions";
+import { previewChange, deleteTool, showUpdateForm } from "../../redux/actions";
 import { connect } from "react-redux";
 import { ReactComponent as DownloadIcon } from "../../icons/download.svg";
 import { ReactComponent as DeleteIcon } from "../../icons/delete.svg";
 import { ReactComponent as UpdateIcon } from "../../icons/update.svg";
 import GridSelect from "./grid-select";
+import UpdateTool from "../tool/update/tool-update";
 
 class Grid extends React.Component {
 
@@ -124,61 +125,74 @@ class Grid extends React.Component {
     onUpdateClick = async (e, rowInd) => {
         try {
             const oldProps = { ...this.props };
-            const { selectedVals: oldSelectedVals, rows: oldRows } = oldProps;
+            const { selectedVals: oldSelectedVals, rows: oldRows, showUpdateForm } = oldProps;
             const row = oldRows[rowInd];
             const versionSelVal = oldSelectedVals[rowInd];
             const id = row.ids[versionSelVal];
             alert(`${id} of selected row for update`);
+            const axRes = await axios.get(`/api/service/tool/${id}`);
+            const { instruction, versioned_name } = axRes.data;
+            const toolObject = {
+                id,
+                preview: instruction,
+                updInpVName: versioned_name
+            }
+            showUpdateForm(toolObject);
         } catch (error) {
             console.error(error);
         }
     }
 
     render() {
-        const { renderHeader, props: { rows } } = this;
+        const { renderHeader, props: { rows, update: { isVisible } } } = this;
         return (
-            <table className="table table-hover table-dark">
-                <thead>
-                    <tr>{renderHeader()}</tr>
-                </thead>
-                <tbody className='row-auto'>
-                    {
-                        rows && rows.length > 0 ? (rows.map((row, ind) => (
-                            <tr key={`row-${ind}`} onClick={e => this.onRowClick(e, row, ind)}>
-                                <td key={`row-name-td-${ind}`}>
-                                    <u style={{ color: 'white' }}>
-                                        {row.name}
-                                    </u>
-                                </td>
-                                <td key={`row-grid-${ind}`}>
-                                    <GridSelect rowData={{ row, rowInd: ind }} />
-                                </td>
-                                <td key={`row-grid-dwnlod-${ind}`}>
-                                    <button className='btn btn-info btn-sm'
-                                        onClick={e => this.onDownload(e, ind)} >
-                                        <DownloadIcon style={{ paddingTop: '2px' }} />
-                                    </button>
-                                </td>
-                                <td key={`row-del-${ind}`}>
-                                    <button className='btn btn-danger btn-sm'
-                                        onClick={e => {
-                                            e.stopPropagation();
-                                            this.onDelete(e, ind);
-                                        }}>
-                                        <DeleteIcon style={{ paddingTop: '2px' }} />
-                                    </button>
-                                </td>
-                                <td key={`row-upd-${ind}`}>
-                                    <button className='btn btn-secondary btn-sm'
-                                        onClick={e => this.onUpdateClick(e, ind)}>
-                                        <UpdateIcon style={{ paddingTop: '2px' }} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))) : null
-                    }
-                </tbody>
-            </table>
+            <Fragment>
+                {
+                    isVisible ? <UpdateTool /> : (
+                        <table className="table table-hover table-striped">
+                            <thead>
+                                <tr>{renderHeader()}</tr>
+                            </thead>
+                            <tbody className='row-auto'>
+                                {
+                                    rows && rows.length > 0 ? (rows.map((row, ind) => (
+                                        <tr key={`row-${ind}`} onClick={e => this.onRowClick(e, row, ind)}>
+                                            <td key={`row-name-td-${ind}`}>
+                                                <u>
+                                                    {row.name}
+                                                </u>
+                                            </td>
+                                            <td key={`row-grid-${ind}`}>
+                                                <GridSelect rowData={{ row, rowInd: ind }} />
+                                            </td>
+                                            <td key={`row-grid-dwnlod-${ind}`}>
+                                                <button className='btn btn-info btn-sm'
+                                                    onClick={e => this.onDownload(e, ind)} >
+                                                    <DownloadIcon style={{ paddingTop: '2px' }} />
+                                                </button>
+                                            </td>
+                                            <td key={`row-del-${ind}`}>
+                                                <button className='btn btn-danger btn-sm'
+                                                    onClick={e => {
+                                                        e.stopPropagation();
+                                                        this.onDelete(e, ind);
+                                                    }}>
+                                                    <DeleteIcon style={{ paddingTop: '2px' }} />
+                                                </button>
+                                            </td>
+                                            <td key={`row-upd-${ind}`}>
+                                                <button className='btn btn-secondary btn-sm'
+                                                    onClick={e => this.onUpdateClick(e, ind)}>
+                                                    <UpdateIcon style={{ paddingTop: '2px' }} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))) : null
+                                }
+                            </tbody>
+                        </table>)
+                }
+            </Fragment>
         );
     }
 
@@ -193,7 +207,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
     return {
         previewChange: (preview) => dispatch(previewChange(preview)),
-        deleteTool: ({ rows, preview, selectedVals }) => dispatch(deleteTool({ rows, preview, selectedVals }))
+        deleteTool: ({ rows, preview, selectedVals }) => dispatch(deleteTool({ rows, preview, selectedVals })),
+        showUpdateForm: (id) => dispatch(showUpdateForm(id))
     };
 };
 
