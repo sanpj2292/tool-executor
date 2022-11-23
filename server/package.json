@@ -15,7 +15,7 @@
     "express-fileupload": "^1.1.7-alpha.1",
     "express-ip": "^1.0.4",
     "mongoose": "^5.9.7",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.5.0"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
